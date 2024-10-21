@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAppStore } from "./store/appStore";
 import calcSurprise from "./utils/surprise";
 import states from "./data/states.json";
+import { getUrl } from "./utils/prefix";
 
 import "@mantine/core/styles.css";
 import "./App.css";
@@ -86,7 +87,7 @@ function App() {
     if (data) return;
 
     // get data and format it.
-    d3.csv("/data/unemployment.csv").then((data) => {
+    d3.csv(getUrl("data/unemployment.csv")).then((data) => {
       const formattedData = data.reduce((acc, d) => {
         acc[d.fips] = {
           fips: d.fips,
