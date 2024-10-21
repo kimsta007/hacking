@@ -69,6 +69,7 @@ const calcSurprise = (d, isElicited, filterIds) => {
   const expectedMean = mean(rateData[1]); //Use mean from historical data
   const rateStdDev = stdev(rateData[0]);
   const totalPopulation = math.sum(rateData[2]);
+  const maxPopulation = math.max(rateData[2]);
   const surpriseData = [];
 
   let pMs = [1],
@@ -78,6 +79,8 @@ const calcSurprise = (d, isElicited, filterIds) => {
     diffs = [0],
     s = 0;
 
+  let minZScore = 100;
+  let maxZScore = -100;
 
   for (const fipsCode in data) {
     if (+data[fipsCode].rate !== fipsCode) {
@@ -88,6 +91,12 @@ const calcSurprise = (d, isElicited, filterIds) => {
           (rateStdDev /
             Math.sqrt(+data[fipsCode].population / totalPopulation));
       data[fipsCode].zScore = (+data[fipsCode].rate - rateMean) / rateStdDev;
+      if (data[fipsCode].zScore < minZScore) {
+        minZScore = data[fipsCode].zScore;
+      }
+      if (data[fipsCode].zScore > maxZScore) {
+        maxZScore = data[fipsCode].zScore;
+      }
       pSMs.push(2 * (1 - cdf(Math.abs(s))));
     } else {
       pSMs.push(0);
@@ -140,19 +149,19 @@ const calcSurprise = (d, isElicited, filterIds) => {
     counties: data,
     surpriseRange: [parseFloat(-limit.toFixed(3)), parseFloat(limit.toFixed(3))],
     rateRange: calculateIQRange(rateData[0]),
+    zScoreRange: [minZScore, maxZScore],
     rateMean: rateMean,
     expectedMean: expectedMean,
     rateStdDev: rateStdDev,
     totalPopulation: totalPopulation,
+    maxPopulation: maxPopulation,
   };
 };
 
-export const calcSurpriseNewData = (d, newData) => {
-  const data = JSON.parse(JSON.stringify(d));
-  const rateData = getRate(data, false);
-  const rateMean = mean(rateData[0]);
-  const rateStdDev = stdev(rateData[0]);
-  const totalPopulation = math.sum(rateData[2]);
+export const calcSurpriseNewData = (summary, newData) => {
+  const rateMean = summary.rateMean;
+  const rateStdDev = summary.rateStdDev;
+  const totalPopulation = summary.totalPopulation;
 
   let pMs = [1],
     pSMs = [];
@@ -169,9 +178,12 @@ export const calcSurpriseNewData = (d, newData) => {
     pSMs.push(2 * (1 - cdf(Math.abs(zScore))));
   });
 
+
   newData.forEach((d, i) => {
     if (+d.rate == 0 || d.population == undefined) {
-      d[i].surprise = 0;
+      console.log(d);
+      d.surprise = 0;
+      console.log("test")
     } else {
       diffs[0] = +d.rate - rateMean;
       pMDs[0] = pMs[0] * pSMs[i];

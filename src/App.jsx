@@ -31,9 +31,7 @@ function App() {
   // const stateData = useAppStore((state) => state.stateData);
   const setStateData = useAppStore((state) => state.setStateData);
   const stateDataSummary = useAppStore((state) => state.stateDataSummary);
-  const setStateDataSummary = useAppStore(
-    (state) => state.setStateDataSummary
-  );
+  const setStateDataSummary = useAppStore((state) => state.setStateDataSummary);
 
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
@@ -107,7 +105,6 @@ function App() {
       setData(counties);
 
       setDataSummary(summary);
-      console.log(counties);
     });
   }, [data, setData, setDataSummary]);
 
@@ -159,13 +156,17 @@ function App() {
         </Grid.Col>
         <Grid.Col span={6}>
           <div>State Choropleth</div>
-          <StateMap plot="rate" colorScale={colorScaleStateRate} />
+          {stateDataSummary && (
+            <StateMap plot="rate" colorScale={colorScaleStateRate} />
+          )}
 
           <div>State Surprise</div>
-          <StateMap plot="surprise" colorScale={colorScaleStateSurprise} />
+          {stateDataSummary && (
+            <StateMap plot="surprise" colorScale={colorScaleStateSurprise} />
+          )}
         </Grid.Col>
       </Grid>
-      <FunnelPlot />
+      <FunnelPlot colorScale={colorScaleSurprise} />
     </MantineProvider>
   );
 }
