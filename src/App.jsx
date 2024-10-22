@@ -29,7 +29,7 @@ function App() {
   const setDataSummary = useAppStore((state) => state.setDataSummary);
 
   // selected state data
-  // const stateData = useAppStore((state) => state.stateData);
+  const stateData = useAppStore((state) => state.stateData);
   const setStateData = useAppStore((state) => state.setStateData);
   const stateDataSummary = useAppStore((state) => state.stateDataSummary);
   const setStateDataSummary = useAppStore((state) => state.setStateDataSummary);
@@ -167,7 +167,18 @@ function App() {
           )}
         </Grid.Col>
       </Grid>
-      <FunnelPlot colorScale={colorScaleSurprise} />
+      <FunnelPlot
+        colorScale={colorScaleSurprise}
+        data={data}
+        dataSummary={dataSummary}
+      />
+      {stateDataSummary && (
+        <FunnelPlot
+          colorScale={colorScaleSurprise}
+          data={stateData}
+          dataSummary={stateDataSummary}
+        />
+      )}
     </MantineProvider>
   );
 }

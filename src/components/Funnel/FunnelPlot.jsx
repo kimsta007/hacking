@@ -15,10 +15,10 @@ const W = originalWidth - margin.left - margin.right;
 const H = originalHeight - margin.top - margin.bottom;
 
 const contourSteps = 1;
-function FunnelPlot({ colorScale }) {
+function FunnelPlot({ data, dataSummary, colorScale }) {
   const canvasRef = useRef(null);
-  const data = useAppStore((state) => state.data);
-  const dataSummary = useAppStore((state) => state.dataSummary);
+  // const data = useAppStore((state) => state.data);
+  // const dataSummary = useAppStore((state) => state.dataSummary);
 
   const contourData = useMemo(() => {
     console.log(dataSummary);
