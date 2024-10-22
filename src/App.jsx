@@ -167,18 +167,27 @@ function App() {
           )}
         </Grid.Col>
       </Grid>
-      <FunnelPlot
-        colorScale={colorScaleSurprise}
-        data={data}
-        dataSummary={dataSummary}
-      />
-      {stateDataSummary && (
-        <FunnelPlot
-          colorScale={colorScaleSurprise}
-          data={stateData}
-          dataSummary={stateDataSummary}
-        />
-      )}
+
+      <Grid gutter={0}>
+        <Grid.Col span={6}>
+          <div>Funnel Surprise US</div>
+          <FunnelPlot
+            colorScale={colorScaleSurprise}
+            data={data}
+            dataSummary={dataSummary}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <div>Funnel Surprise State</div>
+          {stateDataSummary && (
+            <FunnelPlot
+              colorScale={colorScaleSurprise}
+              data={stateData}
+              dataSummary={stateDataSummary}
+            />
+          )}
+        </Grid.Col>
+      </Grid>
     </MantineProvider>
   );
 }

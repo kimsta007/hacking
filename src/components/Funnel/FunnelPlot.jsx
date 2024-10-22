@@ -3,27 +3,28 @@ import * as d3 from "d3";
 import { useAppStore } from "../../store/appStore";
 import { calcSurpriseNewData } from "../../utils/surprise";
 import PropTypes from "prop-types";
+import "./funnelPlot.css";
 
 const dpr = window.devicePixelRatio || 2;
 
-const originalWidth = 400;
+const originalWidth = 500;
 const originalHeight = 200;
 const width = originalWidth * dpr;
 const height = originalHeight * dpr;
-const margin = { top: 0, right: 0, bottom: 0, left: 0 };
+const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 const W = originalWidth - margin.left - margin.right;
 const H = originalHeight - margin.top - margin.bottom;
 
 const contourSteps = 1;
+
 function FunnelPlot({ data, dataSummary, colorScale }) {
   const canvasRef = useRef(null);
-  // const data = useAppStore((state) => state.data);
-  // const dataSummary = useAppStore((state) => state.dataSummary);
+  const canvasHighlightRef = useRef(null);
+  const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
 
   const contourData = useMemo(() => {
-    console.log(dataSummary);
     console.log("calculate background surprise data");
-    console.log(data);
+
     if (dataSummary && data) {
       const rangePopulation = [1, dataSummary.maxPopulation];
 
@@ -94,11 +95,13 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
       context.fill();
     }
 
+    context.globalAlpha = 0.5;
+
     // render data points
     Object.values(data).forEach((d) => {
       context.beginPath();
       context.arc(xScale(d.population), yScale(d.zScore), 2, 0, 2 * Math.PI);
-      context.fillStyle = "blue";
+      context.fillStyle = "black";
       context.fill();
     });
 
@@ -106,11 +109,46 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
     console.log("render funnel plot");
   }, [xScale, yScale, data, contourData, colorScale]);
 
+  useEffect(() => {
+    const context = canvasHighlightRef.current.getContext("2d");
+    context.save();
+    context.clearRect(0, 0, width, height);
+    const d = data[hoveredCountyId];
+
+    if (!hoveredCountyId || !d) {
+      context.restore();
+      return;
+    }
+
+    context.scale(dpr, dpr);
+    context.translate(margin.left, margin.top);
+
+    context.beginPath();
+    context.arc(xScale(d.population), yScale(d.zScore), 5, 0, 2 * Math.PI);
+    context.fillStyle = "white";
+    context.fill();
+    context.beginPath();
+    context.arc(xScale(d.population), yScale(d.zScore), 4, 0, 2 * Math.PI);
+    context.fillStyle = "blue";
+    context.fill();
+
+    context.restore();
+  }, [hoveredCountyId, data, xScale, yScale]);
+
   return (
-    <div>
-      <h1>FunnelPlot</h1>
+    <div className="funnelPlotContainer">
       <canvas
         ref={canvasRef}
+        width={width}
+        height={height}
+        className="funnelPlotCanvas"
+        style={{
+          width: originalWidth,
+          height: originalHeight,
+        }}
+      />
+      <canvas
+        ref={canvasHighlightRef}
         width={width}
         height={height}
         className="funnelPlotCanvas"
@@ -124,6 +162,8 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
 }
 
 FunnelPlot.propTypes = {
+  data: PropTypes.object,
+  dataSummary: PropTypes.object,
   colorScale: PropTypes.func,
 };
 
