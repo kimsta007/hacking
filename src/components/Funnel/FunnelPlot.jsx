@@ -18,17 +18,24 @@ const H = originalHeight - margin.top - margin.bottom;
 
 const contourSteps = 1;
 
-function FunnelPlot({ data, dataSummary, colorScale }) {
+function FunnelPlot({ id, data, dataSummary, colorScale }) {
   const canvasRef = useRef(null);
   const canvasHighlightRef = useRef(null);
   const svgRef = useRef(null);
   const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
+  const brushView = useAppStore((state) => state.brushView);
+  const setBrushView = useAppStore((state) => state.setBrushView);
 
   const [interactionMode, setInteractionMode] = useState("normal"); // normal, brush
 
   const xScale = useMemo(
-    () => d3.scaleLinear().domain([0, dataSummary.maxPopulation]).range([0, W]).nice(),
+    () =>
+      d3
+        .scaleLinear()
+        .domain([0, dataSummary.maxPopulation])
+        .range([0, W])
+        .nice(),
     [dataSummary]
   );
 
@@ -174,6 +181,7 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
     // Create the brush behavior.
     d3.select(svgRef.current).call(
       d3.brush().on("start brush end", ({ selection }) => {
+        setBrushView(id);
         if (selection) {
           // const [[x0, y0], [x1, y1]] = selection;
           const [x0, y0] = transform.invert(selection[0]);
@@ -193,7 +201,11 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
         }
       })
     );
-  }, [data, xScale, yScale]);
+  }, [data, xScale, yScale, setBrushView, id]);
+
+  useEffect(() => {
+    d3.select(svgRef.current).call(d3.brush().clear);
+  }, [brushView]);
 
   return (
     <div>
@@ -245,15 +257,13 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
             Brush
           </Button>
         </Button.Group>
-        <Button onClick={() => {
-          d3.select(svgRef.current).call(d3.brush().clear)
-        }}>Clear</Button>
       </Box>
     </div>
   );
 }
 
 FunnelPlot.propTypes = {
+  id: PropTypes.string,
   data: PropTypes.object,
   dataSummary: PropTypes.object,
   colorScale: PropTypes.func,

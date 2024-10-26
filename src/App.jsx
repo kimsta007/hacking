@@ -172,6 +172,7 @@ function App() {
         <Grid.Col span={6}>
           <div>Funnel Surprise US</div>
           <FunnelPlot
+            id="globalFunnel"
             colorScale={colorScaleSurprise}
             data={data}
             dataSummary={dataSummary}
@@ -181,6 +182,7 @@ function App() {
           <div>Funnel Surprise State</div>
           {stateDataSummary && (
             <FunnelPlot
+              id="stateFunnel"
               colorScale={colorScaleSurprise}
               data={stateData}
               dataSummary={stateDataSummary}

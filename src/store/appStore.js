@@ -23,6 +23,9 @@ export const useAppStore = create(devtools((set) => ({
 
   stateDataSummary: null,
   setStateDataSummary: (stateDataSummary) => set(() => ({ stateDataSummary })),
+
+  brushView: null,
+  setBrushView: (brushView) => set(() => ({ brushView })),
 })));
 
 
