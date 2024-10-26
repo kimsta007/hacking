@@ -1,9 +1,10 @@
-import { memo, useEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 import { useAppStore } from "../../store/appStore";
 import { calcSurpriseNewData } from "../../utils/surprise";
 import PropTypes from "prop-types";
 import "./funnelPlot.css";
+import { Box, Button } from "@mantine/core";
 
 const dpr = window.devicePixelRatio || 2;
 
@@ -20,7 +21,39 @@ const contourSteps = 1;
 function FunnelPlot({ data, dataSummary, colorScale }) {
   const canvasRef = useRef(null);
   const canvasHighlightRef = useRef(null);
+  const svgRef = useRef(null);
   const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
+  const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
+
+  const [interactionMode, setInteractionMode] = useState("normal"); // normal, brush
+
+  const xScale = useMemo(
+    () => d3.scaleLinear().domain([0, dataSummary.maxPopulation]).range([0, W]),
+    [dataSummary]
+  );
+
+  const yScale = useMemo(() => {
+    const max =
+      Math.abs(dataSummary?.zScoreRange[0]) >
+      Math.abs(dataSummary?.zScoreRange[1])
+        ? Math.abs(dataSummary?.zScoreRange[0])
+        : Math.abs(dataSummary?.zScoreRange[1]);
+    return d3.scaleLinear().domain([-max, max]).range([H, 0]);
+  }, [dataSummary]);
+
+  const delaunay = useMemo(() => {
+    if (data) {
+      return d3.Delaunay.from(
+        Object.values(data),
+        (d) => xScale(d.population),
+        (d) => yScale(d.zScore)
+      );
+    }
+  }, [data, xScale, yScale]);
+
+  const toggleInteractionMode = useCallback(() => {
+    setInteractionMode(interactionMode === "normal" ? "brush" : "normal");
+  }, [interactionMode]);
 
   const contourData = useMemo(() => {
     console.log("calculate background surprise data");
@@ -52,25 +85,11 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
 
       const backgroundData = calcSurpriseNewData(dataSummary, newSurpriseData);
       const contourData = backgroundData.map((d) => d.surprise);
-
+      console.log(data);
       return contourData;
     }
     return null;
   }, [data, dataSummary]);
-
-  const xScale = useMemo(
-    () => d3.scaleLinear().domain([0, dataSummary.maxPopulation]).range([0, W]),
-    [dataSummary]
-  );
-
-  const yScale = useMemo(() => {
-    const max =
-      Math.abs(dataSummary?.zScoreRange[0]) >
-      Math.abs(dataSummary?.zScoreRange[1])
-        ? Math.abs(dataSummary?.zScoreRange[0])
-        : Math.abs(dataSummary?.zScoreRange[1]);
-    return d3.scaleLinear().domain([-max, max]).range([H, 0]);
-  }, [dataSummary]);
 
   useEffect(() => {
     if (!contourData) return;
@@ -135,28 +154,69 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
     context.restore();
   }, [hoveredCountyId, data, xScale, yScale]);
 
+  const handlePointerMove = useCallback(
+    (e) => {
+      const transform = d3.zoomIdentity.translate(margin.left, margin.top);
+      const p = transform.invert(d3.pointer(e));
+      const i = delaunay.find(...p);
+      const county = Object.values(data)[i];
+      setHoveredCountyId(county.fips);
+    },
+    [delaunay, data, setHoveredCountyId]
+  );
+
   return (
-    <div className="funnelPlotContainer">
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
-        className="funnelPlotCanvas"
-        style={{
-          width: originalWidth,
-          height: originalHeight,
-        }}
-      />
-      <canvas
-        ref={canvasHighlightRef}
-        width={width}
-        height={height}
-        className="funnelPlotCanvas"
-        style={{
-          width: originalWidth,
-          height: originalHeight,
-        }}
-      />
+    <div>
+      <div className="funnelPlotContainer">
+        <canvas
+          ref={canvasRef}
+          width={width}
+          height={height}
+          className="funnelPlotCanvas"
+          style={{
+            width: originalWidth,
+            height: originalHeight,
+          }}
+        />
+        <canvas
+          ref={canvasHighlightRef}
+          width={width}
+          height={height}
+          className="funnelPlotCanvas"
+          onPointerMove={handlePointerMove}
+          style={{
+            width: originalWidth,
+            height: originalHeight,
+          }}
+        />
+        {/* svg for brushing */}
+        {interactionMode === "brush" && (
+          <svg
+            ref={svgRef}
+            className="funnelPlotSvg"
+            width={originalWidth}
+            height={originalHeight}
+          />
+        )}
+      </div>
+      <Box m={5}>
+        <Button.Group position="center">
+          <Button
+            variant={interactionMode === "normal" ? "filled" : "default"}
+            onClick={toggleInteractionMode}
+            size="sm"
+          >
+            Normal
+          </Button>
+          <Button
+            variant={interactionMode === "brush" ? "filled" : "default"}
+            onClick={toggleInteractionMode}
+            size="sm"
+          >
+            Brush
+          </Button>
+        </Button.Group>
+      </Box>
     </div>
   );
 }
