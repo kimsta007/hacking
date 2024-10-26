@@ -28,7 +28,7 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
   const [interactionMode, setInteractionMode] = useState("normal"); // normal, brush
 
   const xScale = useMemo(
-    () => d3.scaleLinear().domain([0, dataSummary.maxPopulation]).range([0, W]),
+    () => d3.scaleLinear().domain([0, dataSummary.maxPopulation]).range([0, W]).nice(),
     [dataSummary]
   );
 
@@ -38,7 +38,7 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
       Math.abs(dataSummary?.zScoreRange[1])
         ? Math.abs(dataSummary?.zScoreRange[0])
         : Math.abs(dataSummary?.zScoreRange[1]);
-    return d3.scaleLinear().domain([-max, max]).range([H, 0]);
+    return d3.scaleLinear().domain([-max, max]).range([H, 0]).nice();
   }, [dataSummary]);
 
   const delaunay = useMemo(() => {
@@ -165,6 +165,36 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
     [delaunay, data, setHoveredCountyId]
   );
 
+  useEffect(() => {
+    if (!svgRef.current) {
+      return;
+    }
+    const transform = d3.zoomIdentity.translate(margin.left, margin.top);
+
+    // Create the brush behavior.
+    d3.select(svgRef.current).call(
+      d3.brush().on("start brush end", ({ selection }) => {
+        if (selection) {
+          // const [[x0, y0], [x1, y1]] = selection;
+          const [x0, y0] = transform.invert(selection[0]);
+          const [x1, y1] = transform.invert(selection[1]);
+
+          const selectedCounties = Object.values(data).filter(
+            (d) =>
+              x0 <= xScale(d.population) &&
+              xScale(d.population) < x1 &&
+              y0 <= yScale(d.zScore) &&
+              yScale(d.zScore) < y1
+          );
+
+          // TODO: store brushed counties.
+        } else {
+          // TODO: clear selection here.
+        }
+      })
+    );
+  }, [data, xScale, yScale]);
+
   return (
     <div>
       <div className="funnelPlotContainer">
@@ -190,14 +220,13 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
           }}
         />
         {/* svg for brushing */}
-        {interactionMode === "brush" && (
-          <svg
-            ref={svgRef}
-            className="funnelPlotSvg"
-            width={originalWidth}
-            height={originalHeight}
-          />
-        )}
+        <svg
+          ref={svgRef}
+          style={{ display: interactionMode === "brush" ? "block" : "none" }}
+          className="funnelPlotSvg"
+          width={originalWidth}
+          height={originalHeight}
+        />
       </div>
       <Box m={5}>
         <Button.Group position="center">
@@ -216,6 +245,9 @@ function FunnelPlot({ data, dataSummary, colorScale }) {
             Brush
           </Button>
         </Button.Group>
+        <Button onClick={() => {
+          d3.select(svgRef.current).call(d3.brush().clear)
+        }}>Clear</Button>
       </Box>
     </div>
   );
