@@ -26,6 +26,8 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
   const brushView = useAppStore((state) => state.brushView);
   const setBrushView = useAppStore((state) => state.setBrushView);
+  const brushedCountyIds = useAppStore((state) => state.brushedCountyIds);
+  const setBrushedCountyIds = useAppStore((state) => state.setBrushedCountyIds);
 
   const [interactionMode, setInteractionMode] = useState("normal"); // normal, brush
 
@@ -59,8 +61,13 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
   }, [data, xScale, yScale]);
 
   const toggleInteractionMode = useCallback(() => {
-    setInteractionMode(interactionMode === "normal" ? "brush" : "normal");
-  }, [interactionMode]);
+    const mode = interactionMode === "normal" ? "brush" : "normal";
+    setInteractionMode(mode);
+    if (mode === "normal") {
+      // clear brush
+      setBrushedCountyIds([]);
+    }
+  }, [interactionMode, setBrushedCountyIds]);
 
   const contourData = useMemo(() => {
     console.log("calculate background surprise data");
@@ -141,13 +148,27 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     context.clearRect(0, 0, width, height);
     const d = data[hoveredCountyId];
 
+    context.scale(dpr, dpr);
+    context.translate(margin.left, margin.top);
+
+    brushedCountyIds.forEach((countyId) => {
+      const d = data[countyId];
+      if (d) {
+        context.beginPath();
+        context.arc(xScale(d.population), yScale(d.zScore), 5, 0, 2 * Math.PI);
+        context.fillStyle = "white";
+        context.fill();
+        context.beginPath();
+        context.arc(xScale(d.population), yScale(d.zScore), 4, 0, 2 * Math.PI);
+        context.fillStyle = "green";
+        context.fill();
+      }
+    });
+
     if (!hoveredCountyId || !d) {
       context.restore();
       return;
     }
-
-    context.scale(dpr, dpr);
-    context.translate(margin.left, margin.top);
 
     context.beginPath();
     context.arc(xScale(d.population), yScale(d.zScore), 5, 0, 2 * Math.PI);
@@ -159,7 +180,7 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     context.fill();
 
     context.restore();
-  }, [hoveredCountyId, data, xScale, yScale]);
+  }, [hoveredCountyId, brushedCountyIds, data, xScale, yScale]);
 
   const handlePointerMove = useCallback(
     (e) => {
@@ -195,13 +216,16 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
               yScale(d.zScore) < y1
           );
 
+          setBrushedCountyIds(selectedCounties.map((c) => c.fips));
+
           // TODO: store brushed counties.
         } else {
+          setBrushedCountyIds([]);
           // TODO: clear selection here.
         }
       })
     );
-  }, [data, xScale, yScale, setBrushView, id]);
+  }, [data, xScale, yScale, setBrushView, setBrushedCountyIds, id]);
 
   useEffect(() => {
     d3.select(svgRef.current).call(d3.brush().clear);

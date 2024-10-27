@@ -1,33 +1,38 @@
 import { create } from "zustand";
-import { devtools } from 'zustand/middleware'
+import { devtools } from "zustand/middleware";
 import * as d3 from "d3";
 
-export const useAppStore = create(devtools((set) => ({
-  transform: d3.zoomIdentity,
-  setTransform: (t) => set(() => ({ transform: t })),
+export const useAppStore = create(
+  devtools((set) => ({
+    transform: d3.zoomIdentity,
+    setTransform: (t) => set(() => ({ transform: t })),
 
-  hoveredCountyId: null,
-  setHoveredCountyId: (id) => set(() => ({ hoveredCountyId: id })),
+    hoveredCountyId: null,
+    setHoveredCountyId: (id) => set(() => ({ hoveredCountyId: id })),
 
-  data: null,
-  setData: (data) => set(() => ({ data })),
+    brushedCountyIds: [],
+    setBrushedCountyIds: (ids) => set(() => ({ brushedCountyIds: ids })),
 
-  dataSummary: null,
-  setDataSummary: (dataSummary) => set(() => ({ dataSummary })),
+    data: null,
+    setData: (data) => set(() => ({ data })),
 
-  selectedState: null,
-  setSelectedState: (selectedState) => set(() => ({ selectedState })),
+    dataSummary: null,
+    setDataSummary: (dataSummary) => set(() => ({ dataSummary })),
 
-  stateData: null,
-  setStateData: (stateData) => set(() => ({ stateData })),
+    selectedState: null,
+    setSelectedState: (selectedState) => set(() => ({ selectedState })),
 
-  stateDataSummary: null,
-  setStateDataSummary: (stateDataSummary) => set(() => ({ stateDataSummary })),
+    stateData: null,
+    setStateData: (stateData) => set(() => ({ stateData })),
 
-  brushView: null,
-  setBrushView: (brushView) => set(() => ({ brushView })),
-})));
+    stateDataSummary: null,
+    setStateDataSummary: (stateDataSummary) =>
+      set(() => ({ stateDataSummary })),
 
+    brushView: null,
+    setBrushView: (brushView) => set(() => ({ brushView })),
+  }))
+);
 
 // // Usage with a plain action store, it will log actions as "setState"
 // const usePlainStore = create(devtools((set) => ...))
