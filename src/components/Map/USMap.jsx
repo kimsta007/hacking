@@ -55,22 +55,6 @@ function USMap({ plot, colorScale }) {
         .attr("stroke-width", null);
     }
 
-    if (brushedCountyIds) {
-      const e = d3.select(svgRef.current);
-
-      e.selectAll(".county-brushed")
-        .attr("stroke", "#AAA")
-        .attr("stroke-width", null);
-
-      brushedCountyIds.forEach((countyId) => {
-        e.select(`[data-id="${countyId}"]`)
-          .classed("county-brushed", true)
-          .attr("stroke", "#000")
-          .attr("stroke-width", 5 / transform.k)
-          .raise();
-      });
-    }
-
     if (hoveredCountyId) {
       const e = d3
         .select(svgRef.current)
@@ -88,7 +72,23 @@ function USMap({ plot, colorScale }) {
       setTooltipY(y);
     }
     prevHoveredCountyId.current = hoveredCountyId;
-  }, [hoveredCountyId, brushedCountyIds, transform]);
+  }, [hoveredCountyId, transform]);
+
+  useEffect(() => {
+    const e = d3.select(svgRef.current);
+
+    e.selectAll(".county-brushed")
+      .attr("stroke", "#AAA")
+      .attr("stroke-width", null);
+
+    brushedCountyIds.forEach((countyId) => {
+      e.select(`[data-id="${countyId}"]`)
+        .classed("county-brushed", true)
+        .attr("stroke", "#000")
+        .attr("stroke-width", 3 / transform.k)
+        .raise();
+    });
+  }, [brushedCountyIds, transform]);
 
   useEffect(() => {
     if (!svgRef.current) {
