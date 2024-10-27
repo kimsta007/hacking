@@ -111,7 +111,11 @@ function App() {
 
   // calclulate surprise for selected state
   useEffect(() => {
-    if (!selectedState || !data) return;
+    if (!selectedState || !data) {
+      setStateData(null);
+      setStateDataSummary(null);
+      return;
+    }
 
     const stateCountyData = {};
 
