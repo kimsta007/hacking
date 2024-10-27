@@ -150,9 +150,9 @@ function App() {
       </Grid>
       <Grid gutter={0}>
         <Grid.Col span={6}>
-          <div>Chropleth</div>
+          <div>US Choropleth</div>
           <USMap plot="rate" colorScale={colorScaleRate} />
-          <div>Surprise</div>
+          <div>US Surprise</div>
           <USMap plot="surprise" colorScale={colorScaleSurprise} />
         </Grid.Col>
         <Grid.Col span={6}>
