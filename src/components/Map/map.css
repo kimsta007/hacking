@@ -1,0 +1,11 @@
+.map-tooltip {
+  position: absolute;
+  background: white;
+  padding: 4px;
+  pointer-events: none;
+  transition: 200ms linear;
+  transform: translate(-50%, 0%);
+  width: 150px;
+  border: 1px solid #000;
+  font-size: 0.75rem;
+}

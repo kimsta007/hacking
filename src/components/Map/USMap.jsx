@@ -4,6 +4,7 @@ import { useAppStore } from "../../store/appStore";
 import * as topojson from "topojson-client";
 import * as topojsonSimplify from "topojson-simplify";
 import * as d3 from "d3";
+import "./map.css";
 
 const width = 500;
 const height = 300;
@@ -49,25 +50,42 @@ function USMap({ plot, colorScale }) {
 
   useEffect(() => {
     if (prevHoveredCountyId.current) {
-      d3.select(svgRef.current)
-        .select(`[data-id="${prevHoveredCountyId.current}"]`)
-        .attr("stroke", "#AAA")
-        .attr("stroke-width", null);
+      const e = d3
+        .select(svgRef.current)
+        .select(`[data-id="${prevHoveredCountyId.current}"]`);
+      if (!e.classed("county-brushed")) {
+        e.attr("stroke", "#AAA").attr("stroke-width", null);
+      }
     }
 
     if (hoveredCountyId) {
       const e = d3
         .select(svgRef.current)
-        .select(`[data-id="${hoveredCountyId}"]`)
-        .attr("stroke", "#000")
-        .attr("stroke-width", 5 / transform.k)
-        .raise();
+        .select(`[data-id="${hoveredCountyId}"]`);
+
+      if (e.empty()) {
+        return;
+      }
+
+      if (!e.classed("county-brushed")) {
+        e.attr("stroke", "#000").attr("stroke-width", 5 / transform.k);
+      }
+      e.raise();
 
       const elemRect = e.node().getBoundingClientRect();
       const parentRect = svgRef.current.getBoundingClientRect();
 
-      const x = elemRect.left - parentRect.left + elemRect.width / 2;
-      const y = elemRect.top - parentRect.top + elemRect.height + 10;
+      let x = elemRect.left - parentRect.left + elemRect.width / 2;
+      let y = elemRect.top - parentRect.top + elemRect.height + 10;
+      if (x < 75) {
+        x = 75;
+      }
+      if (x > width - 75) {
+        x = width - 75;
+      }
+      if (y > height - 70) {
+        y = height - 70;
+      }
       setTooltipX(x);
       setTooltipY(y);
     }
@@ -157,27 +175,25 @@ function USMap({ plot, colorScale }) {
   }, [zoomed, setHoveredCountyId, zoom, data, colorScale, plot]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", overflow: "hidden", height, width }}>
       <svg ref={svgRef} width={width} height={height} className="mapSvg" />
       <div
+        className="map-tooltip"
         style={{
-          position: "absolute",
           left: tooltipX,
           top: tooltipY,
-          background: "white",
-          pointerEvents: "none",
-          transition: "200ms linear",
-          display: hoveredCountyId ? "block" : "none",
-          transform: "translate(-50%, 0%)",
+          display: data[hoveredCountyId] ? "block" : "none",
         }}
       >
         {data[hoveredCountyId] && (
           <>
-            <div>{data[hoveredCountyId].county}</div>
             <div>
-              {plot}: {data[hoveredCountyId][plot]}
+              <strong>{data[hoveredCountyId].county}</strong>
             </div>
-            <div>Pop: {data[hoveredCountyId]["population"]}</div>
+            <div style={{ textTransform: "capitalize" }}>
+              {plot}: {data[hoveredCountyId][plot].toFixed(2)}
+            </div>
+            <div>Population: {data[hoveredCountyId]["population"]}</div>
           </>
         )}
       </div>
