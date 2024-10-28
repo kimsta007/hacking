@@ -101,7 +101,8 @@ export function useSVGMap(width, height) {
 
     e.selectAll(".county-brushed")
       .attr("stroke", "#AAA")
-      .attr("stroke-width", null);
+      .attr("stroke-width", null)
+      .classed("county-brushed", false);
 
     brushedCountyIds.forEach((countyId) => {
       e.select(`[data-id="${countyId}"]`)

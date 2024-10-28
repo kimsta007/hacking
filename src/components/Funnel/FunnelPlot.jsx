@@ -217,11 +217,8 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
           );
 
           setBrushedCountyIds(selectedCounties.map((c) => c.fips));
-
-          // TODO: store brushed counties.
         } else {
           setBrushedCountyIds([]);
-          // TODO: clear selection here.
         }
       })
     );
