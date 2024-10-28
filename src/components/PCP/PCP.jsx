@@ -14,7 +14,8 @@ const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 const W = originalWidth - margin.left - margin.right;
 const H = originalHeight - margin.top - margin.bottom;
 
-function path(d, ctx, x, y, dimensions) {
+function path(d, ctx, x, y, dimensions, colorScale) {
+  ctx.strokeStyle = colorScale(d["surprise"]);
   ctx.beginPath();
   dimensions.forEach(function (p, i) {
     if (i == 0) {
@@ -32,8 +33,8 @@ function PCP({ id, data, colorScale }) {
   const canvasBackgroundRef = useRef(null);
   const canvasForegroundRef = useRef(null);
   const svgRef = useRef(null);
-  const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
-  const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
+  // const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
+  // const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
   const brushView = useAppStore((state) => state.brushView);
   const setBrushView = useAppStore((state) => state.setBrushView);
   const brushedCountyIds = useAppStore((state) => state.brushedCountyIds);
@@ -98,8 +99,8 @@ function PCP({ id, data, colorScale }) {
     foreground.translate(margin.left, margin.top);
 
     values.forEach(function (d) {
-      path(d, background, xScale, yScale, dimensions);
-      path(d, foreground, xScale, yScale, dimensions);
+      path(d, background, xScale, yScale, dimensions, colorScale);
+      path(d, foreground, xScale, yScale, dimensions, colorScale);
     });
 
     background.restore();
@@ -151,11 +152,13 @@ function PCP({ id, data, colorScale }) {
 
     // Handles a brush event, toggling the display of foreground lines.
     function brush() {
-      var actives = [];
-      var extents = [];
+      const actives = [];
+      const extents = [];
+
+      setBrushView(id);
 
       svg.selectAll(".brush").each(function (d) {
-        var brushSelection = d3.brushSelection(this);
+        const brushSelection = d3.brushSelection(this);
         if (brushSelection) {
           actives.push(d);
           extents.push(brushSelection);
@@ -163,7 +166,7 @@ function PCP({ id, data, colorScale }) {
       });
 
       // Filter the data based on brush selections
-      var selected = values.filter(function (d) {
+      const selected = values.filter(function (d) {
         return actives.every(function (dim, i) {
           var extent = extents[i];
           return (
@@ -172,18 +175,49 @@ function PCP({ id, data, colorScale }) {
         });
       });
 
-      // Render selected lines
-      foreground.save();
-      foreground.clearRect(0, 0, width, height);
-      foreground.scale(dpr, dpr);
-      foreground.translate(margin.left, margin.top);
-
-      selected.forEach(function (d) {
-        path(d, foreground, xScale, yScale, dimensions);
-      });
-      foreground.restore();
+      if (actives.length) {
+        setBrushedCountyIds(selected.map((county) => county.fips));
+      } else {
+        setBrushedCountyIds([]);
+      }
     }
-  }, [xScale, yScale, data, dimensions]);
+  }, [
+    id,
+    xScale,
+    yScale,
+    data,
+    dimensions,
+    setBrushedCountyIds,
+    setBrushView,
+    colorScale,
+  ]);
+
+  useEffect(() => {
+    if (!data || !dimensions) {
+      return;
+    }
+    const foreground = canvasForegroundRef.current.getContext("2d");
+
+    // Render selected lines
+    foreground.save();
+    foreground.clearRect(0, 0, width, height);
+    foreground.scale(dpr, dpr);
+    foreground.translate(margin.left, margin.top);
+
+    brushedCountyIds.forEach(function (id) {
+      const d = data[id];
+      if (d) {
+        path(d, foreground, xScale, yScale, dimensions, colorScale);
+      }
+    });
+    foreground.restore();
+  }, [data, xScale, yScale, brushedCountyIds, dimensions, colorScale]);
+
+  useEffect(() => {
+    if (brushView !== id) {
+      d3.select(svgRef.current).selectAll(".brush").call(d3.brush().clear);
+    }
+  }, [brushView, id]);
 
   return (
     <div>
@@ -196,6 +230,7 @@ function PCP({ id, data, colorScale }) {
           style={{
             width: originalWidth,
             height: originalHeight,
+            opacity: brushedCountyIds.length ? 0.25 : 1,
           }}
         />
         <canvas

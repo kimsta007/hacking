@@ -225,8 +225,10 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
   }, [data, xScale, yScale, setBrushView, setBrushedCountyIds, id]);
 
   useEffect(() => {
-    d3.select(svgRef.current).call(d3.brush().clear);
-  }, [brushView]);
+    if (brushView !== id) {
+      d3.select(svgRef.current).call(d3.brush().clear);
+    }
+  }, [brushView, id]);
 
   return (
     <div>
