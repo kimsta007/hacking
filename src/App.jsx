@@ -9,6 +9,7 @@ import { useAppStore } from "./store/appStore";
 import calcSurprise from "./utils/surprise";
 import states from "./data/states.json";
 import { getUrl } from "./utils/prefix";
+import PCP from "./components/PCP/PCP";
 
 import "@mantine/core/styles.css";
 import "./App.css";
@@ -190,6 +191,23 @@ function App() {
               colorScale={colorScaleSurprise}
               data={stateData}
               dataSummary={stateDataSummary}
+            />
+          )}
+        </Grid.Col>
+      </Grid>
+
+      <Grid gutter={0}>
+        <Grid.Col span={6}>
+          <div>PCP US</div>
+          <PCP id="globalPCP" colorScale={colorScaleSurprise} data={data} />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <div>PCP State</div>
+          {stateDataSummary && (
+            <PCP
+              id="statePCP"
+              colorScale={colorScaleSurprise}
+              data={stateData}
             />
           )}
         </Grid.Col>
