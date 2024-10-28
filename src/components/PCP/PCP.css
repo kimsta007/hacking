@@ -1,8 +1,8 @@
 .pcpContainer {
   position: relative;
   width: 500px;
-  height: 400px;
-  background-color: #FFF;
+  height: 300px;
+  background-color: #000;
 }
 
 .pcpCanvas {

@@ -10,7 +10,7 @@ const originalWidth = 500;
 const originalHeight = 300;
 const width = originalWidth * dpr;
 const height = originalHeight * dpr;
-const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+const margin = { top: 0, right: 10, bottom: 0, left: 10 };
 const W = originalWidth - margin.left - margin.right;
 const H = originalHeight - margin.top - margin.bottom;
 
@@ -85,6 +85,7 @@ function PCP({ id, data, colorScale }) {
 
     foreground.strokeStyle = "rgba(0,100,160,0.24)";
     background.strokeStyle = "rgba(0,0,0,0.02)";
+    foreground.lineWidth = 1.5;
 
     // Render full foreground and background
     background.save();
@@ -124,12 +125,15 @@ function PCP({ id, data, colorScale }) {
         d3.select(this).call(axis.scale(xScale[d]).tickSize(-6));
       })
       .selectAll(".tick text")
-      .attr("dy", "2em");
+      .attr("dy", "2em")
+      .attr("style", "text-shadow: 1px 1px 1px black;");
 
     g.append("text")
       .attr("text-anchor", "left")
       .attr("x", 0)
       .attr("y", -10)
+      .attr("fill", "white")
+      .attr("style", "text-shadow: 1px 1px 1px black;")
       .text(String);
 
     // Add and store a brush for each axis.
@@ -249,6 +253,10 @@ function PCP({ id, data, colorScale }) {
           className="pcpSvg"
           width={originalWidth}
           height={originalHeight}
+          color="white"
+          style={{
+            textShadow: "2px 2px 4px black;",
+          }}
         />
       </div>
     </div>
