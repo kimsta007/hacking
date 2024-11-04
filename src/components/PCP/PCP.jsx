@@ -255,7 +255,7 @@ function PCP({ id, data, colorScale }) {
           height={originalHeight}
           color="white"
           style={{
-            textShadow: "2px 2px 4px black;",
+            textShadow: "2px 2px 4px black",
           }}
         />
       </div>
