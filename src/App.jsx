@@ -1,4 +1,4 @@
-import { Grid, MantineProvider } from "@mantine/core";
+import { AppShell, Button, Grid, MantineProvider } from "@mantine/core";
 import { Select } from "@mantine/core";
 import * as d3 from "d3";
 
@@ -22,7 +22,14 @@ const statesOptions = states.map((state) => ({
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
 
+const DATASETS = [
+  { id: "Unemployment", path: "data/unemployment.csv" },
+  { id: "Adult Smoking", path: "data/adult-smoking.csv" },
+];
+
 function App() {
+  const [currentDataset, setCurrentDataset] = useState(null);
+
   // all data
   const data = useAppStore((state) => state.data);
   const setData = useAppStore((state) => state.setData);
@@ -85,10 +92,11 @@ function App() {
 
   // calculate surprise for all counties
   useEffect(() => {
-    if (data) return;
+    if (!currentDataset) return;
+    if (dataSummary?.id === currentDataset.id) return;
 
     // get data and format it.
-    d3.csv(getUrl("data/unemployment.csv")).then((data) => {
+    d3.csv(getUrl(currentDataset.path)).then((data) => {
       const formattedData = data.reduce((acc, d) => {
         acc[d.fips] = {
           fips: d.fips,
@@ -105,10 +113,9 @@ function App() {
 
       const { counties, ...summary } = calcSurprise(formattedData);
       setData(counties);
-
-      setDataSummary(summary);
+      setDataSummary({ ...summary, ...currentDataset });
     });
-  }, [data, setData, setDataSummary]);
+  }, [dataSummary, currentDataset, setData, setDataSummary]);
 
   // calclulate surprise for selected state
   useEffect(() => {
@@ -131,87 +138,122 @@ function App() {
     setStateDataSummary(summary);
   }, [data, selectedState, setStateData, setStateDataSummary]);
 
-  if (!data) return <div>Loading...</div>;
-
   return (
     <MantineProvider>
-      <Grid gutter={0}>
-        <Select
-          data={statesOptions}
-          value={stateValue ? stateValue.value : null}
-          onChange={(_value, option) => {
-            setStateValue(option);
-            if (option) {
-              setSelectedState({
-                fips: option.value,
-                name: option.label,
-              });
-            } else {
-              setSelectedState(null);
-            }
-          }}
-          searchable
-        />
-      </Grid>
-      <Grid gutter={0}>
-        <Grid.Col span={6}>
-          <div>US Choropleth</div>
-          <USMap plot="rate" colorScale={colorScaleRate} />
-          <div>US Surprise</div>
-          <USMap plot="surprise" colorScale={colorScaleSurprise} />
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <div>State Choropleth</div>
-          {stateDataSummary && (
-            <StateMap plot="rate" colorScale={colorScaleStateRate} />
-          )}
+      <AppShell
+        navbar={{
+          width: 300,
+          breakpoint: "sm",
+        }}
+        padding="md"
+      >
+        <AppShell.Navbar p="md">
+          <h1>Surprise Explora</h1>
+          {DATASETS.map((dataset) => (
+            <Button
+              key={dataset.id}
+              variant={currentDataset?.id === dataset.id ? "filled" : "default"}
+              mt={10}
+              onClick={() => {
+                setCurrentDataset(dataset);
+              }}
+            >
+              {dataset.id}
+            </Button>
+          ))}
+        </AppShell.Navbar>
+        <AppShell.Main>
+          {data && (
+            <>
+              <Grid gutter={0}>
+                <Select
+                  data={statesOptions}
+                  placeholder="State"
+                  value={stateValue ? stateValue.value : null}
+                  onChange={(_value, option) => {
+                    setStateValue(option);
+                    if (option) {
+                      setSelectedState({
+                        fips: option.value,
+                        name: option.label,
+                      });
+                    } else {
+                      setSelectedState(null);
+                    }
+                  }}
+                  searchable
+                />
+              </Grid>
+              <Grid gutter={0}>
+                <Grid.Col span={6}>
+                  <div>US Choropleth</div>
+                  <USMap plot="rate" colorScale={colorScaleRate} />
+                  <div>US Surprise</div>
+                  <USMap plot="surprise" colorScale={colorScaleSurprise} />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <div>State Choropleth</div>
+                  {stateDataSummary && (
+                    <StateMap plot="rate" colorScale={colorScaleStateRate} />
+                  )}
 
-          <div>State Surprise</div>
-          {stateDataSummary && (
-            <StateMap plot="surprise" colorScale={colorScaleStateSurprise} />
-          )}
-        </Grid.Col>
-      </Grid>
+                  <div>State Surprise</div>
+                  {stateDataSummary && (
+                    <StateMap
+                      plot="surprise"
+                      colorScale={colorScaleStateSurprise}
+                    />
+                  )}
+                </Grid.Col>
+              </Grid>
 
-      <Grid gutter={0}>
-        <Grid.Col span={6}>
-          <div>Funnel Surprise US</div>
-          <FunnelPlot
-            id="globalFunnel"
-            colorScale={colorScaleSurprise}
-            data={data}
-            dataSummary={dataSummary}
-          />
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <div>Funnel Surprise State</div>
-          {stateDataSummary && (
-            <FunnelPlot
-              id="stateFunnel"
-              colorScale={colorScaleSurprise}
-              data={stateData}
-              dataSummary={stateDataSummary}
-            />
-          )}
-        </Grid.Col>
-      </Grid>
+              <Grid gutter={0}>
+                <Grid.Col span={6}>
+                  <div>Funnel Surprise US</div>
+                  <FunnelPlot
+                    id="globalFunnel"
+                    colorScale={colorScaleSurprise}
+                    data={data}
+                    dataSummary={dataSummary}
+                  />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <div>Funnel Surprise State</div>
+                  {stateDataSummary && (
+                    <FunnelPlot
+                      id="stateFunnel"
+                      colorScale={colorScaleSurprise}
+                      data={stateData}
+                      dataSummary={stateDataSummary}
+                    />
+                  )}
+                </Grid.Col>
+              </Grid>
 
-      <Grid gutter={0}>
-        <Grid.Col span={6}>
-          <div>PCP US</div>
-          <PCP id="globalPCP" colorScale={colorScaleSurprise} data={data} />
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <div>PCP State</div>
-          {stateDataSummary && (
-            <PCP
-              id="statePCP"
-              colorScale={colorScaleSurprise}
-              data={stateData}
-            />
+              <Grid gutter={0}>
+                <Grid.Col span={6}>
+                  <div>PCP US</div>
+                  <PCP
+                    id="globalPCP"
+                    colorScale={colorScaleSurprise}
+                    data={data}
+                  />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <div>PCP State</div>
+                  {stateDataSummary && (
+                    <PCP
+                      id="statePCP"
+                      colorScale={colorScaleSurprise}
+                      data={stateData}
+                    />
+                  )}
+                </Grid.Col>
+              </Grid>
+            </>
           )}
-        </Grid.Col>
-      </Grid>
+        </AppShell.Main>
+      </AppShell>
     </MantineProvider>
   );
 }
