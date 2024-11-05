@@ -44,7 +44,7 @@ export function useSVGMap(width, height) {
       const e = d3
         .select(svgRef.current)
         .select(`[data-id="${prevHoveredCountyId.current}"]`);
-      if (!e.classed("county-brushed")) {
+      if (!e.empty() && !e.classed("county-brushed")) {
         e.attr("stroke", "#AAA").attr("stroke-width", null);
       }
     }
