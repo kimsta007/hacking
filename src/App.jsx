@@ -1,9 +1,13 @@
 import {
   AppShell,
   Button,
+  Center,
   Divider,
   Grid,
+  Loader,
   MantineProvider,
+  SegmentedControl,
+  Space,
   Text,
   Title,
 } from "@mantine/core";
@@ -30,14 +34,16 @@ const statesOptions = states.map((state) => ({
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
 
-const DATASETS = [
-  { id: "Unemployment", path: "data/unemployment.csv" },
-  { id: "Adult Smoking", path: "data/adult-smoking.csv" },
-  { id: "Obesity", path: "data/obesity.csv" },
-];
+const DATASETS = {
+  Unemployment: { id: "Unemployment", path: "data/unemployment.csv" },
+  "Adult Smoking": { id: "Adult Smoking", path: "data/adult-smoking.csv" },
+  Obesity: { id: "Obesity", path: "data/obesity.csv" },
+};
 
 function App() {
-  const [currentDataset, setCurrentDataset] = useState(null);
+  const [currentDataset, setCurrentDataset] = useState(
+    DATASETS["Unemployment"]
+  );
 
   // all data
   const data = useAppStore((state) => state.data);
@@ -54,6 +60,10 @@ function App() {
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
   const [stateValue, setStateValue] = useState(null);
+
+  const isLoading = !currentDataset
+    ? false
+    : currentDataset.id !== dataSummary?.id;
 
   const colorScaleSurprise = useMemo(
     () =>
@@ -157,23 +167,18 @@ function App() {
         padding="md"
       >
         <AppShell.Navbar p="md">
-          <Title order={4} mb="8">Surprise Explora</Title>
+          <Title order={4} mb="16">
+            Surprise Explora
+          </Title>
 
-          {DATASETS.map((dataset) => (
-            <Button
-              key={dataset.id}
-              variant={currentDataset?.id === dataset.id ? "filled" : "default"}
-              mt={10}
-              onClick={() => {
-                setCurrentDataset(dataset);
-              }}
-            >
-              {dataset.id}
-            </Button>
-          ))}
-
+          <Text>Dataset:</Text>
+          <SegmentedControl
+            orientation="vertical"
+            fullWidth
+            onChange={(id) => setCurrentDataset(DATASETS[id])}
+            data={Object.keys(DATASETS)}
+          />
           <Divider my="md" />
-
           <Select
             data={statesOptions}
             placeholder="State"
@@ -191,16 +196,17 @@ function App() {
             }}
             searchable
           />
-
           <Divider my="md" />
-
-          <Text>
+          <Text size="sm">
             Surprise Map is a visualization technique that weights event data
-            relative to a set of spatio-temporal models.
+            relative to a set of spatio-temporal models. Unexpected events
+            (those that induce large changes in belief over the model space) are
+            visualized more prominently than those that follow expected
+            patterns.
           </Text>
         </AppShell.Navbar>
         <AppShell.Main>
-          {data && (
+          {data && !isLoading && (
             <>
               <Grid gutter={0}>
                 <Grid.Col span={6}>
@@ -271,7 +277,13 @@ function App() {
             </>
           )}
 
-          {!data && <Text>No data selected</Text>}
+          {isLoading && (
+            <Center h={"100vh"}>
+              <Loader size={50} />
+            </Center>
+          )}
+
+          {!currentDataset && <Text>No data selected</Text>}
         </AppShell.Main>
       </AppShell>
     </MantineProvider>
