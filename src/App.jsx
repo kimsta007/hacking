@@ -25,6 +25,7 @@ const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
 const DATASETS = [
   { id: "Unemployment", path: "data/unemployment.csv" },
   { id: "Adult Smoking", path: "data/adult-smoking.csv" },
+  { id: "Obesity", path: "data/obesity.csv" },
 ];
 
 function App() {
