@@ -1,4 +1,12 @@
-import { AppShell, Button, Grid, MantineProvider } from "@mantine/core";
+import {
+  AppShell,
+  Button,
+  Divider,
+  Grid,
+  MantineProvider,
+  Text,
+  Title,
+} from "@mantine/core";
 import { Select } from "@mantine/core";
 import * as d3 from "d3";
 
@@ -149,7 +157,8 @@ function App() {
         padding="md"
       >
         <AppShell.Navbar p="md">
-          <h1>Surprise Explora</h1>
+          <Title order={4} mb="8">Surprise Explora</Title>
+
           {DATASETS.map((dataset) => (
             <Button
               key={dataset.id}
@@ -162,29 +171,37 @@ function App() {
               {dataset.id}
             </Button>
           ))}
+
+          <Divider my="md" />
+
+          <Select
+            data={statesOptions}
+            placeholder="State"
+            value={stateValue ? stateValue.value : null}
+            onChange={(_value, option) => {
+              setStateValue(option);
+              if (option) {
+                setSelectedState({
+                  fips: option.value,
+                  name: option.label,
+                });
+              } else {
+                setSelectedState(null);
+              }
+            }}
+            searchable
+          />
+
+          <Divider my="md" />
+
+          <Text>
+            Surprise Map is a visualization technique that weights event data
+            relative to a set of spatio-temporal models.
+          </Text>
         </AppShell.Navbar>
         <AppShell.Main>
           {data && (
             <>
-              <Grid gutter={0}>
-                <Select
-                  data={statesOptions}
-                  placeholder="State"
-                  value={stateValue ? stateValue.value : null}
-                  onChange={(_value, option) => {
-                    setStateValue(option);
-                    if (option) {
-                      setSelectedState({
-                        fips: option.value,
-                        name: option.label,
-                      });
-                    } else {
-                      setSelectedState(null);
-                    }
-                  }}
-                  searchable
-                />
-              </Grid>
               <Grid gutter={0}>
                 <Grid.Col span={6}>
                   <div>US Choropleth</div>
@@ -253,6 +270,8 @@ function App() {
               </Grid>
             </>
           )}
+
+          {!data && <Text>No data selected</Text>}
         </AppShell.Main>
       </AppShell>
     </MantineProvider>
