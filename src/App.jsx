@@ -1,13 +1,11 @@
 import {
   AppShell,
-  Button,
   Center,
   Divider,
   Grid,
   Loader,
   MantineProvider,
   SegmentedControl,
-  Space,
   Text,
   Title,
 } from "@mantine/core";
@@ -195,7 +193,7 @@ function App() {
           <Divider my="md" />
           <Text size="sm">
             Surprise Map is a visualization technique that weights event data
-            relative to a set of spatio-temporal models. Unexpected events
+            relative to a set of spatio models. Unexpected events
             (those that induce large changes in belief over the model space) are
             visualized more prominently than those that follow expected
             patterns.
