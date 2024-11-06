@@ -38,6 +38,7 @@ const DATASETS = {
   Unemployment: { id: "Unemployment", path: "data/unemployment.csv" },
   "Adult Smoking": { id: "Adult Smoking", path: "data/adult-smoking.csv" },
   Obesity: { id: "Obesity", path: "data/obesity.csv" },
+  "Population Change": { id: "Population Change", path: "data/pop-change.csv" },
 };
 
 function App() {
