@@ -28,8 +28,9 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
   const setBrushView = useAppStore((state) => state.setBrushView);
   const brushedCountyIds = useAppStore((state) => state.brushedCountyIds);
   const setBrushedCountyIds = useAppStore((state) => state.setBrushedCountyIds);
-  const updateSurpriseRangeBy = useAppStore((state) => state.updateSurpriseRangeBy);
-
+  const updateSurpriseRangeBy = useAppStore(
+    (state) => state.updateSurpriseRangeBy
+  );
 
   const [interactionMode, setInteractionMode] = useState("Normal"); // normal, brush, scale
 
@@ -238,27 +239,30 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     }
   }, [brushView, id]);
 
-  const handleMouseDown = useCallback((e) => {
-    const direction = e.target.dataset.pos;
-    const startY = e.pageY;
-    const mouseMoveListener = (ev) => {
-      const diff = ev.pageY - startY;
+  const handleMouseDown = useCallback(
+    (e) => {
+      const direction = e.target.dataset.pos;
+      let startY = e.pageY;
+      const mouseMoveListener = (ev) => {
+        const diff = ev.pageY - startY;
+        startY = ev.pageY;
+        updateSurpriseRangeBy(diff, direction);
+      };
+      const mouseUpListener = () => {
+        window.removeEventListener("mousemove", mouseMoveListener);
+        window.removeEventListener("mouseup", mouseUpListener);
+      };
 
-      updateSurpriseRangeBy(diff, direction)
-    };
-    const mouseUpListener = () => {
-      window.removeEventListener("mousemove", mouseMoveListener);
-      window.removeEventListener("mouseup", mouseUpListener);
-    };
+      window.addEventListener("mousemove", mouseMoveListener);
+      window.addEventListener("mouseup", mouseUpListener);
 
-    window.addEventListener("mousemove", mouseMoveListener);
-    window.addEventListener("mouseup", mouseUpListener);
-
-    return () => {
-      window.removeEventListener("mousemove", mouseMoveListener);
-      window.removeEventListener("mouseup", mouseUpListener);
-    };
-  }, [updateSurpriseRangeBy]);
+      return () => {
+        window.removeEventListener("mousemove", mouseMoveListener);
+        window.removeEventListener("mouseup", mouseUpListener);
+      };
+    },
+    [updateSurpriseRangeBy]
+  );
 
   return (
     <div>

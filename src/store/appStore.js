@@ -24,7 +24,7 @@ export const useAppStore = create(
     updateSurpriseRangeBy: (amount, direction) =>
       set((state) => {
         if (direction === "high") {
-          let v = state.surpriseRange[1] - amount / 1000;
+          let v = state.surpriseRange[1] - amount / 500;
           if (v > 1) {
             v = 1;
           }
@@ -35,7 +35,7 @@ export const useAppStore = create(
             surpriseRange: [state.surpriseRange[0], v],
           };
         } else {
-          let v = state.surpriseRange[0] - amount / 1000;
+          let v = state.surpriseRange[0] - amount / 500;
           if (v > 1) {
             v = 1;
           }
