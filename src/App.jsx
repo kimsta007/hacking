@@ -193,7 +193,7 @@ function App() {
           <Divider my="md" />
           <Text size="sm">
             Surprise Map is a visualization technique that weights event data
-            relative to a set of spatio models. Unexpected events
+            relative to a set of spatial models. Unexpected events
             (those that induce large changes in belief over the model space) are
             visualized more prominently than those that follow expected
             patterns.
