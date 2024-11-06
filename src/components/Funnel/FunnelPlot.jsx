@@ -4,7 +4,7 @@ import { useAppStore } from "../../store/appStore";
 import { calcSurpriseNewData } from "../../utils/surprise";
 import PropTypes from "prop-types";
 import "./funnelPlot.css";
-import { Box, Button } from "@mantine/core";
+import { Box, Button, SegmentedControl } from "@mantine/core";
 
 const dpr = window.devicePixelRatio || 2;
 
@@ -28,8 +28,10 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
   const setBrushView = useAppStore((state) => state.setBrushView);
   const brushedCountyIds = useAppStore((state) => state.brushedCountyIds);
   const setBrushedCountyIds = useAppStore((state) => state.setBrushedCountyIds);
+  const updateSurpriseRangeBy = useAppStore((state) => state.updateSurpriseRangeBy);
 
-  const [interactionMode, setInteractionMode] = useState("normal"); // normal, brush
+
+  const [interactionMode, setInteractionMode] = useState("Normal"); // normal, brush, scale
 
   const xScale = useMemo(
     () =>
@@ -60,14 +62,18 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     }
   }, [data, xScale, yScale]);
 
-  const toggleInteractionMode = useCallback(() => {
-    const mode = interactionMode === "normal" ? "brush" : "normal";
-    setInteractionMode(mode);
-    if (mode === "normal") {
-      // clear brush
-      setBrushedCountyIds([]);
-    }
-  }, [interactionMode, setBrushedCountyIds]);
+  const handleInteractionModeChange = useCallback(
+    (mode) => {
+      setInteractionMode(mode);
+      if (mode === "Normal") {
+        // clear brush
+        setBrushedCountyIds([]);
+      } else if (mode === "Brush") {
+        setHoveredCountyId(null);
+      }
+    },
+    [setBrushedCountyIds, setHoveredCountyId]
+  );
 
   const contourData = useMemo(() => {
     console.log("calculate background surprise data");
@@ -139,7 +145,6 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
       context.fill();
       context.stroke();
     });
-    
 
     context.restore();
     console.log("render funnel plot");
@@ -233,8 +238,36 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     }
   }, [brushView, id]);
 
+  const handleMouseDown = useCallback((e) => {
+    const direction = e.target.dataset.pos;
+    const startY = e.pageY;
+    const mouseMoveListener = (ev) => {
+      const diff = ev.pageY - startY;
+
+      updateSurpriseRangeBy(diff, direction)
+    };
+    const mouseUpListener = () => {
+      window.removeEventListener("mousemove", mouseMoveListener);
+      window.removeEventListener("mouseup", mouseUpListener);
+    };
+
+    window.addEventListener("mousemove", mouseMoveListener);
+    window.addEventListener("mouseup", mouseUpListener);
+
+    return () => {
+      window.removeEventListener("mousemove", mouseMoveListener);
+      window.removeEventListener("mouseup", mouseUpListener);
+    };
+  }, [updateSurpriseRangeBy]);
+
   return (
     <div>
+      <Box m={5}>
+        <SegmentedControl
+          onChange={handleInteractionModeChange}
+          data={["Normal", "Brush", "Scale"]}
+        />
+      </Box>
       <div className="funnelPlotContainer">
         <canvas
           ref={canvasRef}
@@ -260,30 +293,29 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
         {/* svg for brushing */}
         <svg
           ref={svgRef}
-          style={{ display: interactionMode === "brush" ? "block" : "none" }}
+          style={{ display: interactionMode === "Brush" ? "block" : "none" }}
           className="funnelPlotSvg"
           width={originalWidth}
           height={originalHeight}
         />
+        <div
+          className="funnelPlotScaleOverlay"
+          style={{
+            display: interactionMode === "Scale" ? "block" : "none",
+          }}
+        >
+          <div
+            className="funnelPlotScaleOverlay__top"
+            data-pos="high"
+            onMouseDown={handleMouseDown}
+          ></div>
+          <div
+            className="funnelPlotScaleOverlay__bottom"
+            data-pos="low"
+            onMouseDown={handleMouseDown}
+          ></div>
+        </div>
       </div>
-      <Box m={5}>
-        <Button.Group position="center">
-          <Button
-            variant={interactionMode === "normal" ? "filled" : "default"}
-            onClick={toggleInteractionMode}
-            size="sm"
-          >
-            Normal
-          </Button>
-          <Button
-            variant={interactionMode === "brush" ? "filled" : "default"}
-            onClick={toggleInteractionMode}
-            size="sm"
-          >
-            Brush
-          </Button>
-        </Button.Group>
-      </Box>
     </div>
   );
 }

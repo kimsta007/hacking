@@ -51,6 +51,7 @@ function App() {
   const setData = useAppStore((state) => state.setData);
   const dataSummary = useAppStore((state) => state.dataSummary);
   const setDataSummary = useAppStore((state) => state.setDataSummary);
+  const surpriseRange = useAppStore((state) => state.surpriseRange);
 
   // selected state data
   const stateData = useAppStore((state) => state.stateData);
@@ -67,14 +68,8 @@ function App() {
     : currentDataset.id !== dataSummary?.id;
 
   const colorScaleSurprise = useMemo(
-    () =>
-      dataSummary
-        ? d3
-            .scaleQuantile()
-            .domain(dataSummary.surpriseRange)
-            .range(colorPaletteSurprise)
-        : null,
-    [dataSummary]
+    () => d3.scaleQuantile().domain(surpriseRange).range(colorPaletteSurprise),
+    [surpriseRange]
   );
 
   const colorScaleRate = useMemo(

@@ -17,7 +17,36 @@ export const useAppStore = create(
     setData: (data) => set(() => ({ data })),
 
     dataSummary: null,
-    setDataSummary: (dataSummary) => set(() => ({ dataSummary })),
+    setDataSummary: (dataSummary) =>
+      set(() => ({ dataSummary, surpriseRange: dataSummary.surpriseRange })),
+
+    surpriseRange: [-1, 1],
+    updateSurpriseRangeBy: (amount, direction) =>
+      set((state) => {
+        if (direction === "high") {
+          let v = state.surpriseRange[1] - amount / 1000;
+          if (v > 1) {
+            v = 1;
+          }
+          if (v < -1) {
+            v = -1;
+          }
+          return {
+            surpriseRange: [state.surpriseRange[0], v],
+          };
+        } else {
+          let v = state.surpriseRange[0] - amount / 1000;
+          if (v > 1) {
+            v = 1;
+          }
+          if (v < -1) {
+            v = -1;
+          }
+          return {
+            surpriseRange: [v, state.surpriseRange[1]],
+          };
+        }
+      }),
 
     selectedState: null,
     setSelectedState: (selectedState) => set(() => ({ selectedState })),
