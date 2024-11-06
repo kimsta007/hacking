@@ -126,14 +126,14 @@ function PCP({ id, data, colorScale }) {
       })
       .selectAll(".tick text")
       .attr("dy", "2em")
-      .attr("style", "text-shadow: 1px 1px 1px black;");
+      .attr("style", "text-shadow: 1px 1px 1px white;");
 
     g.append("text")
       .attr("text-anchor", "left")
       .attr("x", 0)
       .attr("y", -10)
-      .attr("fill", "white")
-      .attr("style", "text-shadow: 1px 1px 1px black;")
+      .attr("fill", "black")
+      .attr("style", "text-shadow: 1px 1px 1px white;")
       .text(String);
 
     // Add and store a brush for each axis.
@@ -253,7 +253,7 @@ function PCP({ id, data, colorScale }) {
           className="pcpSvg"
           width={originalWidth}
           height={originalHeight}
-          color="white"
+          color="black"
           style={{
             textShadow: "2px 2px 4px black",
           }}

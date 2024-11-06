@@ -130,13 +130,16 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
 
     context.globalAlpha = 0.5;
 
+    context.fillStyle = "black";
+    context.strokeStyle = "white";
     // render data points
     Object.values(data).forEach((d) => {
       context.beginPath();
-      context.arc(xScale(d.population), yScale(d.zScore), 2, 0, 2 * Math.PI);
-      context.fillStyle = "black";
+      context.arc(xScale(d.population), yScale(d.zScore), 3, 0, 2 * Math.PI);
       context.fill();
+      context.stroke();
     });
+    
 
     context.restore();
     console.log("render funnel plot");
