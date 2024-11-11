@@ -33,10 +33,10 @@ const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
 
 const DATASETS = {
-  Unemployment: { id: "Unemployment", path: "data/unemployment.csv" },
-  "Adult Smoking": { id: "Adult Smoking", path: "data/adult-smoking.csv" },
-  Obesity: { id: "Obesity", path: "data/obesity.csv" },
-  "Population Change": { id: "Population Change", path: "data/pop-change.csv" },
+  Unemployment: { id: "Unemployment", path: "data/v2/unemployment.csv" },
+  "Adult Smoking": { id: "Adult Smoking", path: "data/v2/adult-smoking.csv" },
+  Obesity: { id: "Obesity", path: "data/v2/obesity.csv" },
+  "Population Change": { id: "Population Change", path: "data/v2/pop-change.csv" },
 };
 
 function App() {
@@ -120,6 +120,7 @@ function App() {
           asianpop: +d.asianpop,
           blackpop: +d.blackpop,
           county: d.county,
+          typology: d.typology
         };
         return acc;
       }, {});

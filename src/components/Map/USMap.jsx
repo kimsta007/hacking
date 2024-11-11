@@ -104,6 +104,7 @@ function USMap({ plot, colorScale }) {
               {plot}: {data[hoveredCountyId][plot].toFixed(2)}
             </div>
             <div>Population: {data[hoveredCountyId]["population"]}</div>
+            <div>Typology: {data[hoveredCountyId]["typology"]}</div>
           </>
         )}
       </div>
