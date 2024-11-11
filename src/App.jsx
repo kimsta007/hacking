@@ -22,6 +22,7 @@ import calcSurprise from "./utils/surprise";
 import states from "./data/states.json";
 import { getUrl } from "./utils/prefix";
 import PCP from "./components/PCP/PCP";
+import DATASETS from "./data/datasets.json";
 
 import "@mantine/core/styles.css";
 import "./App.css";
@@ -33,32 +34,6 @@ const statesOptions = states.map((state) => ({
 
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
-
-const DATASETS = {
-  Unemployment: {
-    id: "Unemployment",
-    path: "data/v2/unemployment.csv",
-    description: "Percentage of unemployment rates for U.S. counties in 2018",
-  },
-  "Adult Smoking": {
-    id: "Adult Smoking",
-    path: "data/v2/adult-smoking.csv",
-    description:
-      "Age adjusted percentage of adults who are current smokers for U.S. counties in 2021",
-  },
-  Obesity: {
-    id: "Obesity",
-    path: "data/v2/obesity.csv",
-    description:
-      "Percentage of the adult population (age 18 and older) that reports a body mass index (BMI) greater than or equal to 30 kg/m2 (2022)",
-  },
-  "Population Change": {
-    id: "Population Change",
-    path: "data/v2/pop-change.csv",
-    description:
-      "Growth or decline in population for U.S. counties from 2010 to 2020",
-  },
-};
 
 function App() {
   const [currentDataset, setCurrentDataset] = useState(
@@ -222,7 +197,9 @@ function App() {
         </AppShell.Navbar>
         <AppShell.Main bg={"#ddd"}>
           <Box className="header-data-info">
-            <Badge color="gray" mr="md">DATA</Badge>
+            <Badge color="gray" mr="md">
+              DATA
+            </Badge>
             <Text display={"inline-block"}>{currentDataset?.description}</Text>
           </Box>
 

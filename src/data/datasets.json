@@ -1,0 +1,22 @@
+{
+  "Unemployment": {
+    "id": "Unemployment",
+    "path": "data/v2/unemployment.csv",
+    "description": "Percentage of unemployment rates for U.S. counties in 2018"
+  },
+  "Adult Smoking": {
+    "id": "Adult Smoking",
+    "path": "data/v2/adult-smoking.csv",
+    "description": "Age adjusted percentage of adults who are current smokers for U.S. counties in 2021"
+  },
+  "Obesity": {
+    "id": "Obesity",
+    "path": "data/v2/obesity.csv",
+    "description": "Percentage of the adult population (age 18 and older) that reports a body mass index (BMI) greater than or equal to 30 kg/m2 (2022)"
+  },
+  "Population Change": {
+    "id": "Population Change",
+    "path": "data/v2/pop-change.csv",
+    "description": "Growth or decline in population for U.S. counties from 2010 to 2020"
+  }
+}
