@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^17.0.0",
     "@mantine/core": "^7.12.2",
     "@mantine/dates": "^7.12.2",
     "@mantine/form": "^7.12.2",
     "@mantine/hooks": "^7.12.2",
     "@mantine/modals": "^7.12.2",
+    "@tabler/icons": "3.17.0",
+    "@tabler/icons-react": "2.47.0",
     "d3": "^7.9.0",
     "dayjs": "^1.11.13",
     "jstat": "^1.9.6",

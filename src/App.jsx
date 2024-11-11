@@ -19,9 +19,10 @@ import FunnelPlot from "./components/Funnel";
 import { useEffect, useMemo, useState } from "react";
 import { useAppStore } from "./store/appStore";
 import calcSurprise from "./utils/surprise";
-import states from "./data/states.json";
 import { getUrl } from "./utils/prefix";
 import PCP from "./components/PCP/PCP";
+import OrderUIElements from "./components/OrderUIElements/OrderUIElements";
+import states from "./data/states.json";
 import DATASETS from "./data/datasets.json";
 
 import "@mantine/core/styles.css";
@@ -49,12 +50,15 @@ function App() {
 
   // selected state data
   const stateData = useAppStore((state) => state.stateData);
+
   const setStateData = useAppStore((state) => state.setStateData);
   const stateDataSummary = useAppStore((state) => state.stateDataSummary);
   const setStateDataSummary = useAppStore((state) => state.setStateDataSummary);
 
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
+
+  const uiElements = useAppStore((state) => state.uiElements);
   const [stateValue, setStateValue] = useState(null);
 
   const isLoading = !currentDataset
@@ -194,6 +198,11 @@ function App() {
             induce large changes in belief over the model space) are visualized
             more prominently than those that follow expected patterns.
           </Text>
+          <Divider my="md" />
+          <Box>
+            UI Elements
+            <OrderUIElements />
+          </Box>
         </AppShell.Navbar>
         <AppShell.Main bg={"#ddd"}>
           <Box className="header-data-info">
@@ -203,76 +212,98 @@ function App() {
             <Text display={"inline-block"}>{currentDataset?.description}</Text>
           </Box>
 
-          {data && !isLoading && (
-            <>
-              <Grid gutter={0}>
-                <Grid.Col span={6}>
-                  <div>US Choropleth</div>
-                  <USMap plot="rate" colorScale={colorScaleRate} />
-                  <div>US Surprise</div>
-                  <USMap plot="surprise" colorScale={colorScaleSurprise} />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <div>State Choropleth</div>
-                  {stateDataSummary && (
-                    <StateMap plot="rate" colorScale={colorScaleStateRate} />
-                  )}
-
-                  <div>State Surprise</div>
-                  {stateDataSummary && (
-                    <StateMap
-                      plot="surprise"
-                      colorScale={colorScaleStateSurprise}
-                    />
-                  )}
-                </Grid.Col>
-              </Grid>
-
-              <Grid gutter={0}>
-                <Grid.Col span={6}>
-                  <div>Funnel Surprise US</div>
-                  <FunnelPlot
-                    id="globalFunnel"
-                    colorScale={colorScaleSurprise}
-                    data={data}
-                    dataSummary={dataSummary}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <div>Funnel Surprise State</div>
-                  {stateDataSummary && (
-                    <FunnelPlot
-                      id="stateFunnel"
-                      colorScale={colorScaleSurprise}
-                      data={stateData}
-                      dataSummary={stateDataSummary}
-                    />
-                  )}
-                </Grid.Col>
-              </Grid>
-
-              <Grid gutter={0}>
-                <Grid.Col span={6}>
-                  <div>PCP US</div>
-                  <PCP
-                    id="globalPCP"
-                    colorScale={colorScaleSurprise}
-                    data={data}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <div>PCP State</div>
-                  {stateDataSummary && (
-                    <PCP
-                      id="statePCP"
-                      colorScale={colorScaleSurprise}
-                      data={stateData}
-                    />
-                  )}
-                </Grid.Col>
-              </Grid>
-            </>
-          )}
+          {data &&
+            !isLoading &&
+            uiElements.map((elem) => {
+              if (!elem.visible) return null;
+              if (elem.id === "choroplethMap") {
+                return (
+                  <Grid gutter={0} key={elem.id}>
+                    <Grid.Col span={6}>
+                      <div>US Choropleth Map</div>
+                      <USMap plot="rate" colorScale={colorScaleRate} />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <div>{selectedState?.name} Choropleth Map</div>
+                      {stateDataSummary && (
+                        <StateMap
+                          plot="rate"
+                          colorScale={colorScaleStateRate}
+                        />
+                      )}
+                    </Grid.Col>
+                  </Grid>
+                );
+              } else if (elem.id === "surpriseMap") {
+                return (
+                  <Grid gutter={0} key={elem.id}>
+                    <Grid.Col span={6}>
+                      <div>US Surprise Map</div>
+                      <USMap plot="surprise" colorScale={colorScaleSurprise} />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <div>{selectedState?.name} Surprise Map</div>
+                      {stateDataSummary && (
+                        <StateMap
+                          plot="surprise"
+                          colorScale={colorScaleStateSurprise}
+                        />
+                      )}
+                    </Grid.Col>
+                  </Grid>
+                );
+              } else if (elem.id === "funnelPlot") {
+                return (
+                  <Grid key={elem.id} gutter={0}>
+                    <Grid.Col span={6}>
+                      <div>US Surprise Funnel Plot</div>
+                      <FunnelPlot
+                        id="globalFunnel"
+                        colorScale={colorScaleSurprise}
+                        data={data}
+                        dataSummary={dataSummary}
+                      />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <div>
+                        {selectedState?.name} State Surprise Funnel Plot
+                      </div>
+                      {stateDataSummary && (
+                        <FunnelPlot
+                          id="stateFunnel"
+                          colorScale={colorScaleStateSurprise}
+                          data={stateData}
+                          dataSummary={stateDataSummary}
+                        />
+                      )}
+                    </Grid.Col>
+                  </Grid>
+                );
+              } else if (elem.id === "pcp") {
+                return (
+                  <Grid key={elem.id} gutter={0}>
+                    <Grid.Col span={6}>
+                      <div>US PCP</div>
+                      <PCP
+                        id="globalPCP"
+                        colorScale={colorScaleSurprise}
+                        data={data}
+                      />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                      <div>{selectedState?.name} PCP</div>
+                      {stateDataSummary && (
+                        <PCP
+                          id="statePCP"
+                          colorScale={colorScaleSurprise}
+                          data={stateData}
+                        />
+                      )}
+                    </Grid.Col>
+                  </Grid>
+                );
+              }
+            })}
 
           {isLoading && (
             <Center h={"100vh"}>

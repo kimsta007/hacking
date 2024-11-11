@@ -60,6 +60,14 @@ export const useAppStore = create(
 
     brushView: null,
     setBrushView: (brushView) => set(() => ({ brushView })),
+
+    uiElements: [
+      { id: "choroplethMap", visible: true },
+      { id: "surpriseMap", visible: true },
+      { id: "funnelPlot", visible: true },
+      { id: "pcp", visible: true },
+    ],
+    setUIElements: (uiElements) => set(() => ({ uiElements })),
   }))
 );
 
