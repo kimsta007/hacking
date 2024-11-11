@@ -5,3 +5,16 @@
 .funnelPlotCanvas {
   border: 1px solid #000;
 }
+
+.header-data-info {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1rem;
+  margin: -1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #000;
+  background: #fff;
+  display: flex;
+  align-items: center;
+}
