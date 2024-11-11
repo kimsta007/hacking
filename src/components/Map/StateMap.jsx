@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import { useAppStore } from "../../store/appStore";
 import * as topojson from "topojson-client";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
+import us from "../../data/us-10m.v1.json";
 import "./map.css";
 
 const width = 500;
@@ -26,7 +27,6 @@ function StateMap({ plot, colorScale }) {
       return;
     }
 
-    d3.select(svgRef.current).selectAll("*").remove();
     console.log("Render Map");
     const svg = d3
       .select(svgRef.current)
@@ -38,14 +38,16 @@ function StateMap({ plot, colorScale }) {
     svg.call(zoom);
     const path = d3.geoPath();
 
-    const g = svg.append("g");
-    gRef.current = g;
+    let g = svg.select("g.stateMapGroup");
+    if (g.empty()) {
+      g = svg.append("g").attr("class", "stateMapGroup");
+      gRef.current = g;
+    }
 
     async function load() {
       if (!stateFips || !data) {
         return null;
       }
-      const us = await d3.json("https://d3js.org/us-10m.v1.json");
 
       // // Extract the state boundary
       // const state = topojson
@@ -59,7 +61,7 @@ function StateMap({ plot, colorScale }) {
 
       g.append("g")
         .append("path")
-        .attr("fill", "#d0d0d0")
+        .attr("fill", "#e0e0e0")
         .attr("pointer-events", "none")
         .attr("stroke", "#000")
         .attr("stroke-width", 0.5)
@@ -94,7 +96,6 @@ function StateMap({ plot, colorScale }) {
           path(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
         );
     }
-
     load();
   }, [
     svgRef,

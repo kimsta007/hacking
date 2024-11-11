@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import { useAppStore } from "../../store/appStore";
 import * as topojson from "topojson-client";
 import * as topojsonSimplify from "topojson-simplify";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
+import us from "../../data/us-10m.v1.json";
 import "./map.css";
 
 const width = 500;
@@ -24,7 +25,7 @@ function USMap({ plot, colorScale }) {
       return;
     }
 
-    d3.select(svgRef.current).selectAll("*").remove();
+    // d3.select(svgRef.current).selectAll("*").remove();
     console.log("Render Map");
     const svg = d3
       .select(svgRef.current)
@@ -35,12 +36,13 @@ function USMap({ plot, colorScale }) {
     svg.call(zoom);
     const path = d3.geoPath();
 
-    const g = svg.append("g");
-    gRef.current = g;
+    let g = svg.select("g.nationalMapGroup");
+    if (g.empty()) {
+      g = svg.append("g").attr("class", "nationalMapGroup")
+      gRef.current = g;
+    }
 
     async function load() {
-      const us = await d3.json("https://d3js.org/us-10m.v1.json");
-
       // let counties = topojson.feature(us, us.objects.counties).features;
 
       const simplifiedTopology = topojsonSimplify.presimplify(us);

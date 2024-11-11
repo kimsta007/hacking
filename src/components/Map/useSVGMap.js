@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
+import * as topojson from "topojson-client";
+import us from "../../data/us-10m.v1.json";
+
 import { useAppStore } from "../../store/appStore";
 
 export function useSVGMap(width, height) {
@@ -7,6 +10,8 @@ export function useSVGMap(width, height) {
   const gRef = useRef(null);
   const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
   const prevHoveredCountyId = useRef(hoveredCountyId);
+  const selectedState = useAppStore((state) => state.selectedState);
+
   const brushedCountyIds = useAppStore((state) => state.brushedCountyIds);
 
   const transform = useAppStore((state) => state.transform);
@@ -26,7 +31,7 @@ export function useSVGMap(width, height) {
   );
 
   const zoom = useMemo(
-    () => d3.zoom().scaleExtent([0.5, 20]).on("zoom", zoomed),
+    () => d3.zoom().scaleExtent([0.45, 20]).on("zoom", zoomed),
     [zoomed]
   );
 
@@ -112,6 +117,29 @@ export function useSVGMap(width, height) {
         .raise();
     });
   }, [brushedCountyIds, transform, svgRef]);
+
+  useEffect(() => {
+    let [[x0, y0], [x1, y1]] = [
+      [-56.74777081105434, 12.469025989284091],
+      [942.332624291058, 596.9298966319916],
+    ];
+    if (selectedState) {
+      const path = d3.geoPath();
+
+      const d = topojson
+        .feature(us, us.objects.states)
+        .features.find((d) => +d.id === +selectedState.fips);
+
+      [[x0, y0], [x1, y1]] = path.bounds(d);
+    }
+
+    const newZoom = d3.zoomIdentity
+      .translate(width / 2, height / 2)
+      .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
+      .translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+
+    setTransform(newZoom);
+  }, [selectedState, gRef, zoom.transform, height, width, setTransform]);
 
   return {
     svgRef,
