@@ -212,106 +212,119 @@ function App() {
             <Text display={"inline-block"}>{currentDataset?.description}</Text>
           </Box>
 
-          {data &&
-            !isLoading &&
-            uiElements.map((elem) => {
-              if (!elem.visible) return null;
-              if (elem.id === "choroplethMap") {
-                return (
-                  <Grid gutter={0} key={elem.id}>
-                    <Grid.Col span={6}>
-                      <div>US Choropleth Map</div>
-                      <USMap plot="rate" colorScale={colorScaleRate} />
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                      <div>{selectedState?.name} Choropleth Map</div>
-                      {stateDataSummary && (
-                        <StateMap
-                          plot="rate"
-                          colorScale={colorScaleStateRate}
-                        />
+          <Box w={1032}>
+            {data &&
+              !isLoading &&
+              uiElements.map((elem) => {
+                if (!elem.visible) return null;
+                if (elem.id === "choroplethMap") {
+                  return (
+                    <Grid gutter={0} key={elem.id} mb="md">
+                      <Grid.Col span={6}>
+                        <div>US Choropleth Map</div>
+                        <USMap plot="rate" colorScale={colorScaleRate} />
+                      </Grid.Col>
+                      {selectedState && (
+                        <Grid.Col span={6}>
+                          <div>{selectedState?.name} Choropleth Map</div>
+                          {stateDataSummary && (
+                            <StateMap
+                              plot="rate"
+                              colorScale={colorScaleStateRate}
+                            />
+                          )}
+                        </Grid.Col>
                       )}
-                    </Grid.Col>
-                  </Grid>
-                );
-              } else if (elem.id === "surpriseMap") {
-                return (
-                  <Grid gutter={0} key={elem.id}>
-                    <Grid.Col span={6}>
-                      <div>US Surprise Map</div>
-                      <USMap plot="surprise" colorScale={colorScaleSurprise} />
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                      <div>{selectedState?.name} Surprise Map</div>
-                      {stateDataSummary && (
-                        <StateMap
+                    </Grid>
+                  );
+                } else if (elem.id === "surpriseMap") {
+                  return (
+                    <Grid gutter={0} key={elem.id} mb="md">
+                      <Grid.Col span={6}>
+                        <div>US Surprise Map</div>
+                        <USMap
                           plot="surprise"
-                          colorScale={colorScaleStateSurprise}
-                        />
-                      )}
-                    </Grid.Col>
-                  </Grid>
-                );
-              } else if (elem.id === "funnelPlot") {
-                return (
-                  <Grid key={elem.id} gutter={0}>
-                    <Grid.Col span={6}>
-                      <div>US Surprise Funnel Plot</div>
-                      <FunnelPlot
-                        id="globalFunnel"
-                        colorScale={colorScaleSurprise}
-                        data={data}
-                        dataSummary={dataSummary}
-                      />
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                      <div>
-                        {selectedState?.name} State Surprise Funnel Plot
-                      </div>
-                      {stateDataSummary && (
-                        <FunnelPlot
-                          id="stateFunnel"
-                          colorScale={colorScaleStateSurprise}
-                          data={stateData}
-                          dataSummary={stateDataSummary}
-                        />
-                      )}
-                    </Grid.Col>
-                  </Grid>
-                );
-              } else if (elem.id === "pcp") {
-                return (
-                  <Grid key={elem.id} gutter={0}>
-                    <Grid.Col span={6}>
-                      <div>US PCP</div>
-                      <PCP
-                        id="globalPCP"
-                        colorScale={colorScaleSurprise}
-                        data={data}
-                      />
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                      <div>{selectedState?.name} PCP</div>
-                      {stateDataSummary && (
-                        <PCP
-                          id="statePCP"
                           colorScale={colorScaleSurprise}
-                          data={stateData}
                         />
+                      </Grid.Col>
+                      {selectedState && (
+                        <Grid.Col span={6}>
+                          <div>{selectedState?.name} Surprise Map</div>
+                          {stateDataSummary && (
+                            <StateMap
+                              plot="surprise"
+                              colorScale={colorScaleStateSurprise}
+                            />
+                          )}
+                        </Grid.Col>
                       )}
-                    </Grid.Col>
-                  </Grid>
-                );
-              }
-            })}
+                    </Grid>
+                  );
+                } else if (elem.id === "funnelPlot") {
+                  return (
+                    <Grid key={elem.id} gutter={0} mb="md">
+                      <Grid.Col span={6}>
+                        <div>US Surprise Funnel Plot</div>
+                        <FunnelPlot
+                          id="globalFunnel"
+                          colorScale={colorScaleSurprise}
+                          data={data}
+                          dataSummary={dataSummary}
+                        />
+                      </Grid.Col>
+                      {selectedState && (
+                        <Grid.Col span={6}>
+                          <div>
+                            {selectedState?.name} State Surprise Funnel Plot
+                          </div>
+                          {stateDataSummary && (
+                            <FunnelPlot
+                              id="stateFunnel"
+                              colorScale={colorScaleStateSurprise}
+                              data={stateData}
+                              dataSummary={stateDataSummary}
+                            />
+                          )}
+                        </Grid.Col>
+                      )}
+                    </Grid>
+                  );
+                } else if (elem.id === "pcp") {
+                  return (
+                    <Grid key={elem.id} gutter={0} mb="md">
+                      <Grid.Col span={6}>
+                        <div>US PCP</div>
+                        <PCP
+                          id="globalPCP"
+                          colorScale={colorScaleSurprise}
+                          data={data}
+                        />
+                      </Grid.Col>
+                      {selectedState && (
+                        <Grid.Col span={6}>
+                          <div>{selectedState?.name} PCP</div>
+                          {stateDataSummary && (
+                            <PCP
+                              id="statePCP"
+                              colorScale={colorScaleSurprise}
+                              data={stateData}
+                            />
+                          )}
+                        </Grid.Col>
+                      )}
+                    </Grid>
+                  );
+                }
+              })}
 
-          {isLoading && (
-            <Center h={"100vh"}>
-              <Loader size={50} />
-            </Center>
-          )}
+            {isLoading && (
+              <Center h={"100vh"}>
+                <Loader size={50} />
+              </Center>
+            )}
 
-          {!currentDataset && <Text>No data selected</Text>}
+            {!currentDataset && <Text>No data selected</Text>}
+          </Box>
         </AppShell.Main>
       </AppShell>
     </MantineProvider>

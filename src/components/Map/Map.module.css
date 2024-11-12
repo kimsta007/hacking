@@ -1,4 +1,4 @@
-.map-tooltip {
+.mapTooltip {
   position: absolute;
   background: white;
   padding: 4px;
@@ -8,4 +8,10 @@
   width: 180px;
   border: 1px solid #000;
   font-size: 0.75rem;
+}
+
+.map {
+  position: relative;
+  /* overflow: "hidden" */
+  border: 1px solid #000;
 }

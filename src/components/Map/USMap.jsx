@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 import { useAppStore } from "../../store/appStore";
 import * as topojson from "topojson-client";
 import * as topojsonSimplify from "topojson-simplify";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
 import us from "../../data/us-10m.v1.json";
-import "./map.css";
+import classes from "./Map.module.css";
 
 const width = 500;
 const height = 300;
@@ -41,6 +41,7 @@ function USMap({ plot, colorScale }) {
       g = svg.append("g").attr("class", "nationalMapGroup")
       gRef.current = g;
     }
+    g.selectAll("*").remove();
 
     async function load() {
       // let counties = topojson.feature(us, us.objects.counties).features;
@@ -87,10 +88,10 @@ function USMap({ plot, colorScale }) {
   }, [svgRef, gRef, setHoveredCountyId, zoom, data, colorScale, plot]);
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", height, width }}>
+    <div className={classes.map} style={{ height, width }}>
       <svg ref={svgRef} width={width} height={height} className="mapSvg" />
       <div
-        className="map-tooltip"
+        className={classes.mapTooltip}
         style={{
           left: tooltipX,
           top: tooltipY,

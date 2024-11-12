@@ -19,8 +19,8 @@ function OrderUIElements() {
 
   const [state, handlers] = useListState(data);
   const [visibility, setVisibility] = useState({
-    choroplethMap: false,
-    surpriseMap: false,
+    choroplethMap: true,
+    surpriseMap: true,
     funnelPlot: false,
     pcp: false,
   });

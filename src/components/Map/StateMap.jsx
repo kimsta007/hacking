@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 import { useAppStore } from "../../store/appStore";
 import * as topojson from "topojson-client";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
 import us from "../../data/us-10m.v1.json";
-import "./map.css";
+import classes from "./Map.module.css";
 
 const width = 500;
 const height = 300;
@@ -43,6 +43,7 @@ function StateMap({ plot, colorScale }) {
       g = svg.append("g").attr("class", "stateMapGroup");
       gRef.current = g;
     }
+    g.selectAll("*").remove();
 
     async function load() {
       if (!stateFips || !data) {
@@ -113,10 +114,10 @@ function StateMap({ plot, colorScale }) {
   }
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", height, width }}>
+    <div className={classes.map} style={{ height, width }}>
       <svg ref={svgRef} width={width} height={height} className="mapSvg" />
       <div
-        className="map-tooltip"
+        className={classes.mapTooltip}
         style={{
           left: tooltipX,
           top: tooltipY,
