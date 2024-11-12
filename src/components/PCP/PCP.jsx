@@ -7,7 +7,7 @@ import "./PCP.css";
 const dpr = window.devicePixelRatio || 2;
 
 const originalWidth = 500;
-const originalHeight = 300;
+const originalHeight = 250;
 const width = originalWidth * dpr;
 const height = originalHeight * dpr;
 const margin = { top: 0, right: 10, bottom: 0, left: 10 };
@@ -44,7 +44,7 @@ function PCP({ id, data, colorScale }) {
     if (!data) {
       return [null, null, null];
     }
-    const y = d3.scalePoint().range([0, H]).padding(1);
+    const y = d3.scalePoint().range([0, H]).padding(0.5);
     const x = {};
     let dimensions;
 
