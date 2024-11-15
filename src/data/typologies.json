@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Working Class Country",
+    "description": "Rural blue collar America. Low income, Low college graduate rates."
+  },
+  {
+    "name": "Rural Middle America",
+    "description": "Largely rural and largely white. Average college graduate numbers."
+  },
+  {
+    "name": "African American South",
+    "description": "Median, roughly 40% African American. Low income, High unemployment."
+  },
+  {
+    "name": "Evangelical Hubs",
+    "description": "Many evangelical adherents, few college graduates and health care providers."
+  },
+  {
+    "name": "Military Posts",
+    "description": "Middle income, diverse communities centered around military bases."
+  },
+  {
+    "name": "College Towns",
+    "description": "Highly educated, Low diversity, High population turnover, Young adults."
+  },
+  {
+    "name": "Exurbs",
+    "description": "Wealthy, well educated, Largely white, Low crime, Longer commutes."
+  },
+  {
+    "name": "Native American Lands",
+    "description": "Large native american population, Young, Low income, Many uninsured."
+  },
+  {
+    "name": "Graying America",
+    "description": "Large senior population, Middle income, Low diversity, Average education."
+  },
+  {
+    "name": "Hispanic Centers",
+    "description": "Heavily hispanic & rural, Young, Low income and Limited health access."
+  },
+  {
+    "name": "Big Cities",
+    "description": "Dense and diverse, High income, High poverty, High crime rates."
+  },
+  {
+    "name": "Urban Suburbs",
+    "description": "Educated, Densely populated, Racial and economic diversity."
+  },
+  {
+    "name": "Aging Farmlands",
+    "description": "Agriculture centric with many seniors, Little diversity and Low unemployment."
+  },
+  {
+    "name": "Middle Suburbs",
+    "description": "Middle income, diverse communities & below average college education."
+  },
+  {
+    "name": "LDS Enclaves",
+    "description": "Large youth population, Middle income, Low diversity."
+  }
+]

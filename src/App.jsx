@@ -3,8 +3,10 @@ import {
   Badge,
   Box,
   Center,
+  Chip,
   Divider,
   Grid,
+  Group,
   Loader,
   MantineProvider,
   SegmentedControl,
@@ -16,7 +18,7 @@ import * as d3 from "d3";
 
 import { USMap, StateMap } from "./components/Map";
 import FunnelPlot from "./components/Funnel";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppStore } from "./store/appStore";
 import calcSurprise from "./utils/surprise";
 import { getUrl } from "./utils/prefix";
@@ -24,6 +26,7 @@ import PCP from "./components/PCP/PCP";
 import OrderUIElements from "./components/OrderUIElements/OrderUIElements";
 import states from "./data/states.json";
 import DATASETS from "./data/datasets.json";
+import TYPOLOGIES from "./data/typologies.json";
 
 import "@mantine/core/styles.css";
 import "./App.css";
@@ -35,10 +38,16 @@ const statesOptions = states.map((state) => ({
 
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
+colorPaletteRate[5] = "#eee";
+colorPaletteSurprise[5] = "#eee";
 
 function App() {
   const [currentDataset, setCurrentDataset] = useState(
     DATASETS["Unemployment"]
+  );
+
+  const [typologies, setTypologies] = useState(
+    TYPOLOGIES.map((t) => ({ ...t, selected: true }))
   );
 
   // all data
@@ -103,25 +112,42 @@ function App() {
     [stateDataSummary]
   );
 
+  const handleTypologyClick = useCallback((event) => {
+    setTypologies((typologies) =>
+      typologies.map((t) =>
+        t.name === event.currentTarget.value
+          ? { ...t, selected: !t.selected }
+          : t
+      )
+    );
+  }, []);
+
   // calculate surprise for all counties
   useEffect(() => {
     if (!currentDataset) return;
-    if (dataSummary?.id === currentDataset.id) return;
+    const selectedTypologies = {};
+    typologies.forEach((t) => {
+      if (t.selected) {
+        selectedTypologies[t.name] = true;
+      }
+    });
 
     // get data and format it.
     d3.csv(getUrl(currentDataset.path)).then((data) => {
       const formattedData = data.reduce((acc, d) => {
-        acc[d.fips] = {
-          fips: d.fips,
-          rate: +d.rate,
-          population: +d.population,
-          latinopop: +d.latinopop,
-          whitepop: +d.whitepop,
-          asianpop: +d.asianpop,
-          blackpop: +d.blackpop,
-          county: d.county,
-          typology: d.typology,
-        };
+        if (selectedTypologies[d.typology]) {
+          acc[d.fips] = {
+            fips: d.fips,
+            rate: +d.rate,
+            population: +d.population,
+            latinopop: +d.latinopop,
+            whitepop: +d.whitepop,
+            asianpop: +d.asianpop,
+            blackpop: +d.blackpop,
+            county: d.county,
+            typology: d.typology,
+          };
+        }
         return acc;
       }, {});
 
@@ -129,7 +155,7 @@ function App() {
       setData(counties);
       setDataSummary({ ...summary, ...currentDataset });
     });
-  }, [dataSummary, currentDataset, setData, setDataSummary]);
+  }, [typologies, currentDataset, setData, setDataSummary]);
 
   // calclulate surprise for selected state
   useEffect(() => {
@@ -166,45 +192,62 @@ function App() {
             Surprise Explora
           </Title>
 
-          <Text>Dataset:</Text>
-          <SegmentedControl
-            orientation="vertical"
-            fullWidth
-            onChange={(id) => setCurrentDataset(DATASETS[id])}
-            data={Object.keys(DATASETS)}
-          />
-          <Divider my="md" />
-          <Select
-            data={statesOptions}
-            placeholder="State"
-            value={stateValue ? stateValue.value : null}
-            onChange={(_value, option) => {
-              setStateValue(option);
-              if (option) {
-                setSelectedState({
-                  fips: option.value,
-                  name: option.label,
-                });
-              } else {
-                setSelectedState(null);
-              }
-            }}
-            searchable
-          />
-          <Divider my="md" />
-          <Text size="sm">
-            Surprise Map is a visualization technique that weights event data
-            relative to a set of spatial models. Unexpected events (those that
-            induce large changes in belief over the model space) are visualized
-            more prominently than those that follow expected patterns.
-          </Text>
-          <Divider my="md" />
-          <Box>
-            UI Elements
-            <OrderUIElements />
-          </Box>
+          <div style={{ flex: 1, overflow: "scroll" }}>
+            <Text>Dataset:</Text>
+            <SegmentedControl
+              orientation="vertical"
+              fullWidth
+              onChange={(id) => setCurrentDataset(DATASETS[id])}
+              data={Object.keys(DATASETS)}
+            />
+            <Divider my="md" />
+            <Select
+              data={statesOptions}
+              placeholder="State"
+              value={stateValue ? stateValue.value : null}
+              onChange={(_value, option) => {
+                setStateValue(option);
+                if (option) {
+                  setSelectedState({
+                    fips: option.value,
+                    name: option.label,
+                  });
+                } else {
+                  setSelectedState(null);
+                }
+              }}
+              searchable
+            />
+
+            <Divider my="md" />
+            <Group gap="xs">
+              {typologies.map((typology) => (
+                <Chip
+                  key={typology.name}
+                  size="xs"
+                  checked={typology.selected}
+                  onClick={handleTypologyClick}
+                  value={typology.name}
+                >
+                  {typology.name}
+                </Chip>
+              ))}
+            </Group>
+            <Divider my="md" />
+            <Text size="sm">
+              Surprise Map is a visualization technique that weights event data
+              relative to a set of spatial models. Unexpected events (those that
+              deviate from prior beliefs over the model space) are visualized
+              more prominently than those that follow expected patterns.
+            </Text>
+            <Divider my="md" />
+            <Box>
+              UI Elements
+              <OrderUIElements />
+            </Box>
+          </div>
         </AppShell.Navbar>
-        <AppShell.Main bg={"#ddd"}>
+        <AppShell.Main bg={"#fff"}>
           <Box className="header-data-info">
             <Badge color="gray" mr="md">
               DATA
