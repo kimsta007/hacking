@@ -4,7 +4,7 @@ import { useAppStore } from "../../store/appStore";
 import { calcSurpriseNewData } from "../../utils/surprise";
 import PropTypes from "prop-types";
 import "./funnelPlot.css";
-import { Box, Button, SegmentedControl } from "@mantine/core";
+import { Box, SegmentedControl } from "@mantine/core";
 
 const dpr = window.devicePixelRatio || 2;
 
@@ -147,9 +147,15 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
       context.stroke();
     });
 
+    context.beginPath();
+    context.moveTo(0, yScale(dataSummary.meanZScore));
+    context.lineTo(W, yScale(dataSummary.meanZScore));
+    context.strokeStyle = "#555";
+    context.stroke();
+
     context.restore();
     console.log("render funnel plot");
-  }, [xScale, yScale, data, contourData, colorScale]);
+  }, [xScale, yScale, data, contourData, colorScale, dataSummary]);
 
   useEffect(() => {
     const context = canvasHighlightRef.current.getContext("2d");

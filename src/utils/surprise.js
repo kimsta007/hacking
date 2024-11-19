@@ -81,6 +81,7 @@ const calcSurprise = (d, isElicited, filterIds) => {
 
   let minZScore = 100;
   let maxZScore = -100;
+  let zScores = [];
 
   for (const fipsCode in data) {
     if (+data[fipsCode].rate !== fipsCode) {
@@ -91,6 +92,7 @@ const calcSurprise = (d, isElicited, filterIds) => {
           (rateStdDev /
             Math.sqrt(+data[fipsCode].population / totalPopulation));
       data[fipsCode].zScore = (+data[fipsCode].rate - rateMean) / rateStdDev;
+      zScores.push(data[fipsCode].zScore);
       if (data[fipsCode].zScore < minZScore) {
         minZScore = data[fipsCode].zScore;
       }
@@ -149,6 +151,7 @@ const calcSurprise = (d, isElicited, filterIds) => {
     counties: data,
     surpriseRange: [parseFloat(-limit.toFixed(3)), parseFloat(limit.toFixed(3))],
     rateRange: calculateIQRange(rateData[0]),
+    meanZScore: d3.mean(zScores),
     zScoreRange: [minZScore, maxZScore],
     rateMean: rateMean,
     expectedMean: expectedMean,
@@ -183,7 +186,6 @@ export const calcSurpriseNewData = (summary, newData) => {
     if (+d.rate == 0 || d.population == undefined) {
       console.log(d);
       d.surprise = 0;
-      console.log("test")
     } else {
       diffs[0] = +d.rate - rateMean;
       pMDs[0] = pMs[0] * pSMs[i];
