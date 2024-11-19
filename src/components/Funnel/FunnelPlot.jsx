@@ -106,7 +106,6 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
 
       const backgroundData = calcSurpriseNewData(dataSummary, newSurpriseData);
       const contourData = backgroundData.map((d) => d.surprise);
-      console.log(data);
       return contourData;
     }
     return null;

@@ -6,13 +6,14 @@ import * as topojsonSimplify from "topojson-simplify";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
 import ToolTip from "./ToolTip";
+import Legend from "./Legend";
 import us from "../../data/us-10m.v1.json";
 import classes from "./Map.module.css";
 
 const width = 500;
 const height = 300;
 
-function USMap({ plot, colorScale }) {
+function USMap({ plot, colorScale, range }) {
   const data = useAppStore((state) => state.data);
   const selectedState = useAppStore((state) => state.selectedState);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
@@ -117,14 +118,17 @@ function USMap({ plot, colorScale }) {
   ]);
 
   return (
-    <div className={classes.map} style={{ height, width }}>
-      <svg ref={svgRef} width={width} height={height} className="mapSvg" />
-      <ToolTip
-        countyData={data[hoveredCountyId]}
-        plot={plot}
-        x={tooltipX}
-        y={tooltipY}
-      />
+    <div>
+      <Legend colorScale={colorScale} range={range} />
+      <div className={classes.map} style={{ height, width }}>
+        <svg ref={svgRef} width={width} height={height} className="mapSvg" />
+        <ToolTip
+          countyData={data[hoveredCountyId]}
+          plot={plot}
+          x={tooltipX}
+          y={tooltipY}
+        />
+      </div>
     </div>
   );
 }
@@ -132,6 +136,7 @@ function USMap({ plot, colorScale }) {
 USMap.propTypes = {
   plot: PropTypes.string.isRequired,
   colorScale: PropTypes.func.isRequired,
+  range: PropTypes.array.isRequired,
 };
 
 export default memo(USMap);

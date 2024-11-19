@@ -295,7 +295,7 @@ function App() {
           </Box>
 
           <Box w={1032}>
-            {data &&
+            {data && dataSummary &&
               !isLoading &&
               uiElements.map((elem) => {
                 if (!elem.visible) return null;
@@ -304,7 +304,7 @@ function App() {
                     <Grid gutter={0} key={elem.id} mb="md">
                       <Grid.Col span={6}>
                         <div>US Choropleth Map</div>
-                        <USMap plot="rate" colorScale={colorScaleRate} />
+                        <USMap plot="rate" colorScale={colorScaleRate} range={dataSummary.rateRange} />
                       </Grid.Col>
                       {selectedState && (
                         <Grid.Col span={6}>
@@ -313,6 +313,7 @@ function App() {
                             <StateMap
                               plot="rate"
                               colorScale={colorScaleStateRate}
+                              range={stateDataSummary.rateRange}
                             />
                           )}
                         </Grid.Col>
@@ -327,6 +328,7 @@ function App() {
                         <USMap
                           plot="surprise"
                           colorScale={colorScaleSurprise}
+                          range={dataSummary.surpriseRange}
                         />
                       </Grid.Col>
                       {selectedState && (
@@ -336,6 +338,7 @@ function App() {
                             <StateMap
                               plot="surprise"
                               colorScale={colorScaleStateSurprise}
+                              range={stateDataSummary.surpriseRange}
                             />
                           )}
                         </Grid.Col>

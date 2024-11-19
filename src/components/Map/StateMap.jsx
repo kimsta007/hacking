@@ -7,11 +7,12 @@ import { useSVGMap } from "./useSVGMap";
 import ToolTip from "./ToolTip";
 import us from "../../data/us-10m.v1.json";
 import classes from "./Map.module.css";
+import Legend from "./Legend";
 
 const width = 500;
 const height = 300;
 
-function StateMap({ plot, colorScale }) {
+function StateMap({ plot, colorScale, range }) {
   const data = useAppStore((state) => state.stateData);
   const selectedState = useAppStore((state) => state.selectedState);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
@@ -116,14 +117,18 @@ function StateMap({ plot, colorScale }) {
   }
 
   return (
-    <div className={classes.map} style={{ height, width }}>
-      <svg ref={svgRef} width={width} height={height} className="mapSvg" />
-      <ToolTip
-        countyData={data[hoveredCountyId]}
-        plot={plot}
-        x={tooltipX}
-        y={tooltipY}
-      />
+    <div>
+      <Legend colorScale={colorScale} range={range} />
+
+      <div className={classes.map} style={{ height, width }}>
+        <svg ref={svgRef} width={width} height={height} className="mapSvg" />
+        <ToolTip
+          countyData={data[hoveredCountyId]}
+          plot={plot}
+          x={tooltipX}
+          y={tooltipY}
+        />
+      </div>
     </div>
   );
 }
@@ -131,6 +136,7 @@ function StateMap({ plot, colorScale }) {
 StateMap.propTypes = {
   plot: PropTypes.string.isRequired,
   colorScale: PropTypes.func.isRequired,
+  range: PropTypes.array.isRequired,
 };
 
 export default memo(StateMap);
