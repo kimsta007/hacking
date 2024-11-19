@@ -409,6 +409,10 @@ function App() {
           </Box>
         </AppShell.Main>
       </AppShell>
+      <div
+        id="tooltipContainer"
+        style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}
+      />
     </MantineProvider>
   );
 }

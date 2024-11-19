@@ -71,22 +71,20 @@ export function useSVGMap(width, height) {
       const elemRect = e.node().getBoundingClientRect();
       const parentRect = svgRef.current.getBoundingClientRect();
 
-      let x = elemRect.left - parentRect.left + elemRect.width / 2;
-      let y = elemRect.top - parentRect.top + elemRect.height + 10;
+      let x = elemRect.left + elemRect.width / 2;
+      let y = elemRect.top + elemRect.height + 10;
 
-      if (x < 100) {
-        x = 100;
+
+      if (x < parentRect.left) {
+        x = parentRect.left;
+      } else if (x > parentRect.right) {
+        x = parentRect.right;
       }
-      if (x > width - 100) {
-        x = width - 100;
-      }
-      if (y < 0) {
-        y = 0;
-      }
-      if (y > height) {
-        y = height - 100;
-      } else if (y > height - 80) {
-        y = elemRect.top - parentRect.top - 110;
+
+      if (y < parentRect.top) {
+        y = parentRect.top;
+      } else if (y > parentRect.bottom) {
+        y = parentRect.bottom;
       }
 
       setTooltipX(x);

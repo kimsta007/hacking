@@ -3,12 +3,21 @@ import { Text } from "@mantine/core";
 import { memo } from "react";
 import classes from "./Map.module.css";
 import STATES from "../../data/states.json";
+import TYPOLOGIES from "../../data/typologies.json";
+import { createPortal } from "react-dom";
+
 
 const statesFipsMap = {};
 
 STATES.forEach((state) => {
   statesFipsMap[state.fips] = state;
 });
+
+const typologiesMap = {};
+TYPOLOGIES.forEach((typology) => {
+  typologiesMap[typology.name] = typology;
+});
+
 
 function ToolTip({ countyData, plot, x, y }) {
   // get state from county's fips code
@@ -20,7 +29,7 @@ function ToolTip({ countyData, plot, x, y }) {
     ? population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     : null;
 
-  return (
+  return createPortal(
     <div
       className={classes.mapTooltip}
       style={{
@@ -44,9 +53,13 @@ function ToolTip({ countyData, plot, x, y }) {
           <Text truncate="end" size="xs">
             Typology: {countyData["typology"]}
           </Text>
+          <Text size="xs" c="gray">
+            {typologiesMap[countyData["typology"]].description}
+          </Text>
         </>
       )}
-    </div>
+    </div>,
+    document.getElementById("tooltipContainer")
   );
 }
 

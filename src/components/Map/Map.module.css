@@ -6,8 +6,11 @@
   transition: 200ms linear;
   transform: translate(-50%, 0%);
   width: 180px;
-  border: 1px solid #000;
+  border: 1px solid #777;
   font-size: 0.75rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  z-index: 1000;
 }
 
 .map {
