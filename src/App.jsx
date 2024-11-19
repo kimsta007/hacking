@@ -196,6 +196,12 @@ function App() {
       }
     });
 
+    if (Object.keys(stateCountyData).length === 0) {
+      setStateData(null);
+      setStateDataSummary(null);
+      return;
+    }
+
     const { counties, ...summary } = calcSurprise(stateCountyData);
     setStateData(counties);
     setStateDataSummary(summary);
