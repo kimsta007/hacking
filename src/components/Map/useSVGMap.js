@@ -46,8 +46,9 @@ export function useSVGMap(width, height) {
 
   useEffect(() => {
     if (prevHoveredCountyId.current) {
-      const e = gRef.current
-        .select(`[data-id="${prevHoveredCountyId.current}"]`);
+      const e = gRef.current.select(
+        `[data-id="${prevHoveredCountyId.current}"]`
+      );
       if (!e.empty() && !e.classed("county-brushed")) {
         e.attr("stroke", "#AAA").attr("stroke-width", null);
       }
@@ -73,18 +74,21 @@ export function useSVGMap(width, height) {
       let x = elemRect.left - parentRect.left + elemRect.width / 2;
       let y = elemRect.top - parentRect.top + elemRect.height + 10;
 
-      if (x < 75) {
-        x = 75;
+      if (x < 100) {
+        x = 100;
       }
-      if (x > width - 75) {
-        x = width - 75;
+      if (x > width - 100) {
+        x = width - 100;
       }
       if (y < 0) {
         y = 0;
       }
-      if (y > height - 70) {
-        y = height - 70;
+      if (y > height) {
+        y = height - 100;
+      } else if (y > height - 80) {
+        y = elemRect.top - parentRect.top - 110;
       }
+
       setTooltipX(x);
       setTooltipY(y);
     }
