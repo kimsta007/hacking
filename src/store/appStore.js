@@ -13,12 +13,17 @@ export const useAppStore = create(
     brushedCountyIds: [],
     setBrushedCountyIds: (ids) => set(() => ({ brushedCountyIds: ids })),
 
+    dataLoading: false,
+    setDataLoading: (loading) => set(() => ({ dataLoading: loading })),
+
     data: null,
     setData: (data) => set(() => ({ data })),
 
     dataSummary: null,
     setDataSummary: (dataSummary) =>
-      set(() => ({ dataSummary, surpriseRange: dataSummary.surpriseRange })),
+      dataSummary
+        ? set(() => ({ dataSummary, surpriseRange: dataSummary.surpriseRange }))
+        : set(() => ({ dataSummary })),
 
     surpriseRange: [-1, 1],
     updateSurpriseRangeBy: (amount, direction) =>

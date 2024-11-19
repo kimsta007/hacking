@@ -2,6 +2,7 @@ import {
   AppShell,
   Badge,
   Box,
+  Button,
   Center,
   Chip,
   Divider,
@@ -50,12 +51,19 @@ function App() {
     TYPOLOGIES.map((t) => ({ ...t, selected: true }))
   );
 
+  const isAllSelected = useMemo(() => {
+    return typologies.every((t) => t.selected);
+  }, [typologies]);
+
   // all data
   const data = useAppStore((state) => state.data);
   const setData = useAppStore((state) => state.setData);
   const dataSummary = useAppStore((state) => state.dataSummary);
   const setDataSummary = useAppStore((state) => state.setDataSummary);
   const surpriseRange = useAppStore((state) => state.surpriseRange);
+
+  const isLoading = useAppStore((state) => state.dataLoading);
+  const setDataLoading = useAppStore((state) => state.setDataLoading);
 
   // selected state data
   const stateData = useAppStore((state) => state.stateData);
@@ -69,10 +77,6 @@ function App() {
 
   const uiElements = useAppStore((state) => state.uiElements);
   const [stateValue, setStateValue] = useState(null);
-
-  const isLoading = !currentDataset
-    ? false
-    : currentDataset.id !== dataSummary?.id;
 
   const colorScaleSurprise = useMemo(
     () => d3.scaleQuantile().domain(surpriseRange).range(colorPaletteSurprise),
@@ -122,9 +126,20 @@ function App() {
     );
   }, []);
 
+  const handleToggleSelectAllTypologies = useCallback(() => {
+    setTypologies((typologies) => {
+      return typologies.map((t) => {
+        return { ...t, selected: !isAllSelected };
+      });
+    });
+  }, [isAllSelected]);
+
   // calculate surprise for all counties
   useEffect(() => {
     if (!currentDataset) return;
+
+    setDataLoading(true);
+
     const selectedTypologies = {};
     typologies.forEach((t) => {
       if (t.selected) {
@@ -151,11 +166,19 @@ function App() {
         return acc;
       }, {});
 
+      if (Object.keys(formattedData).length === 0) {
+        setData(null);
+        setDataSummary(null);
+        setDataLoading(false);
+        return;
+      }
+
       const { counties, ...summary } = calcSurprise(formattedData);
       setData(counties);
       setDataSummary({ ...summary, ...currentDataset });
+      setDataLoading(false);
     });
-  }, [typologies, currentDataset, setData, setDataSummary]);
+  }, [typologies, currentDataset, setData, setDataSummary, setDataLoading]);
 
   // calclulate surprise for selected state
   useEffect(() => {
@@ -220,6 +243,16 @@ function App() {
             />
 
             <Divider my="md" />
+            <Group justify="space-between">
+              <Text>Typology</Text>
+              <Button
+                size="xs"
+                variant="default"
+                onClick={handleToggleSelectAllTypologies}
+              >
+                {isAllSelected ? "De-select All" : "Select All"}
+              </Button>
+            </Group>
             <Group gap="xs">
               {typologies.map((typology) => (
                 <Chip
