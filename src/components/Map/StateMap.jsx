@@ -4,6 +4,7 @@ import { useAppStore } from "../../store/appStore";
 import * as topojson from "topojson-client";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
+import ToolTip from "./ToolTip";
 import us from "../../data/us-10m.v1.json";
 import classes from "./Map.module.css";
 
@@ -116,27 +117,12 @@ function StateMap({ plot, colorScale }) {
   return (
     <div className={classes.map} style={{ height, width }}>
       <svg ref={svgRef} width={width} height={height} className="mapSvg" />
-      <div
-        className={classes.mapTooltip}
-        style={{
-          left: tooltipX,
-          top: tooltipY,
-          display: data[hoveredCountyId] ? "block" : "none",
-        }}
-      >
-        {data[hoveredCountyId] && (
-          <>
-            <div>
-              <strong>{data[hoveredCountyId].county}</strong>
-            </div>
-            <div style={{ textTransform: "capitalize" }}>
-              {plot}: {data[hoveredCountyId][plot].toFixed(2)}
-            </div>
-            <div>Population: {data[hoveredCountyId]["population"]}</div>
-            <div>Typology: {data[hoveredCountyId]["typology"]}</div>
-          </>
-        )}
-      </div>
+      <ToolTip
+        countyData={data[hoveredCountyId]}
+        plot={plot}
+        x={tooltipX}
+        y={tooltipY}
+      />
     </div>
   );
 }

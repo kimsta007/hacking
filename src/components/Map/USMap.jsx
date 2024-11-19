@@ -5,6 +5,7 @@ import * as topojson from "topojson-client";
 import * as topojsonSimplify from "topojson-simplify";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
+import ToolTip from "./ToolTip";
 import us from "../../data/us-10m.v1.json";
 import classes from "./Map.module.css";
 
@@ -38,7 +39,7 @@ function USMap({ plot, colorScale }) {
 
     let g = svg.select("g.nationalMapGroup");
     if (g.empty()) {
-      g = svg.append("g").attr("class", "nationalMapGroup")
+      g = svg.append("g").attr("class", "nationalMapGroup");
       gRef.current = g;
     }
     g.selectAll("*").remove();
@@ -90,27 +91,12 @@ function USMap({ plot, colorScale }) {
   return (
     <div className={classes.map} style={{ height, width }}>
       <svg ref={svgRef} width={width} height={height} className="mapSvg" />
-      <div
-        className={classes.mapTooltip}
-        style={{
-          left: tooltipX,
-          top: tooltipY,
-          display: data[hoveredCountyId] ? "block" : "none",
-        }}
-      >
-        {data[hoveredCountyId] && (
-          <>
-            <div>
-              <strong>{data[hoveredCountyId].county}</strong>
-            </div>
-            <div style={{ textTransform: "capitalize" }}>
-              {plot}: {data[hoveredCountyId][plot].toFixed(2)}
-            </div>
-            <div>Population: {data[hoveredCountyId]["population"]}</div>
-            <div>Typology: {data[hoveredCountyId]["typology"]}</div>
-          </>
-        )}
-      </div>
+      <ToolTip
+        countyData={data[hoveredCountyId]}
+        plot={plot}
+        x={tooltipX}
+        y={tooltipY}
+      />
     </div>
   );
 }
