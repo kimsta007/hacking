@@ -14,6 +14,7 @@ const height = 300;
 
 function USMap({ plot, colorScale }) {
   const data = useAppStore((state) => state.data);
+  const selectedState = useAppStore((state) => state.selectedState);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
 
   const { svgRef, gRef, tooltipX, tooltipY, hoveredCountyId, zoom } = useSVGMap(
@@ -61,6 +62,11 @@ function USMap({ plot, colorScale }) {
         .data(simplifiedCounties)
         .join("path")
         .attr("d", path)
+        .attr("opacity", (d) => {
+          // get 2 digit fips code and match with selected state's fips
+          const fips = Math.floor(+d.id / 1000);
+          return selectedState ? (fips === +selectedState.fips ? 1 : 0.5) : 1;
+        })
         .attr("fill", (d) =>
           data[d.id] ? colorScale(data[d.id][plot]) : "#ffffff"
         )
@@ -76,17 +82,39 @@ function USMap({ plot, colorScale }) {
         .append("path")
         .attr("fill", "none")
         .attr("pointer-events", "none")
-        .attr("stroke", "#000")
+        .attr("stroke", "#555")
         .attr("stroke-width", 0.5)
         .attr("stroke-linejoin", "round")
         .attr(
           "d",
           path(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
         );
+
+      if (selectedState) {
+        const states = topojson.feature(us, us.objects.states).features;
+        const state = states.find((d) => +d.id === +selectedState.fips);
+        g.append("g")
+          .append("path")
+          .attr("fill", "none")
+          .attr("pointer-events", "none")
+          .attr("stroke", "#000")
+          .attr("stroke-width", 1)
+          .attr("stroke-linejoin", "round")
+          .attr("d", path(state));
+      }
     }
 
     load();
-  }, [svgRef, gRef, setHoveredCountyId, zoom, data, colorScale, plot]);
+  }, [
+    svgRef,
+    gRef,
+    setHoveredCountyId,
+    zoom,
+    data,
+    colorScale,
+    plot,
+    selectedState,
+  ]);
 
   return (
     <div className={classes.map} style={{ height, width }}>

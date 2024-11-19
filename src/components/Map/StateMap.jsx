@@ -63,12 +63,13 @@ function StateMap({ plot, colorScale }) {
 
       g.append("g")
         .append("path")
-        .attr("fill", "#e0e0e0")
+        .attr("fill", "#f0f0f0")
         .attr("pointer-events", "none")
-        .attr("stroke", "#000")
-        .attr("stroke-width", 0.5)
+        .attr("stroke", "#999")
+        .attr("stroke-width", 0.35)
         .attr("stroke-linejoin", "round")
         .attr("d", path(topojson.mesh(us, us.objects.nation)));
+
       g.append("g")
         .selectAll("path")
         .data(counties)
@@ -90,7 +91,7 @@ function StateMap({ plot, colorScale }) {
         .append("path")
         .attr("fill", "none")
         .attr("pointer-events", "none")
-        .attr("stroke", "#000")
+        .attr("stroke", "#999")
         .attr("stroke-width", 0.5)
         .attr("stroke-linejoin", "round")
         .attr(
