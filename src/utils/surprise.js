@@ -150,7 +150,8 @@ const calcSurprise = (d, isElicited, filterIds) => {
   return {
     counties: data,
     surpriseRange: [parseFloat(-limit.toFixed(3)), parseFloat(limit.toFixed(3))],
-    rateRange: calculateIQRange(rateData[0]),
+    rateRange: d3.extent(rateData[0]),
+    // rateRange: calculateIQRange(rateData[0]),
     meanZScore: d3.mean(zScores),
     zScoreRange: [minZScore, maxZScore],
     rateMean: rateMean,

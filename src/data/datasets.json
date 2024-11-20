@@ -18,5 +18,10 @@
     "id": "Population Change",
     "path": "data/v2/pop-change.csv",
     "description": "Growth or decline in population for U.S. counties from 2010 to 2020"
+  },
+  "Poverty": {
+    "id": "Poverty",
+    "path": "data/v2/poverty.csv",
+    "description": "Percentage of the population living below the federal poverty line for U.S. counties in 2021"
   }
 }
