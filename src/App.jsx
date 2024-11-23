@@ -124,10 +124,14 @@ function App() {
       stateDataSummary
         ? d3
             .scaleQuantile()
-            .domain(stateDataSummary.rateRange)
+            .domain(
+              rateColorScaleRangeType === "IQR"
+                ? stateDataSummary.rateRangeIQR
+                : stateDataSummary.rateRange
+            )
             .range(colorPaletteRate)
         : null,
-    [stateDataSummary]
+    [stateDataSummary, rateColorScaleRangeType]
   );
 
   const handleTypologyClick = useCallback((event) => {
