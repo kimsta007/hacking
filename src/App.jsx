@@ -294,6 +294,7 @@ function App() {
               setCurrentDataset(DATASETS[value]);
             }}
             mb="md"
+            withCheckIcon={false}
           />
           <Text>State: </Text>
           <Select
@@ -311,6 +312,7 @@ function App() {
               }
             }}
             mb="md"
+            withCheckIcon={false}
             searchable
             clearable
           />
@@ -319,6 +321,7 @@ function App() {
             data={["MinMax", "IQR"]}
             placeholder="Rate color scale range"
             value={rateColorScaleRangeType}
+            withCheckIcon={false}
             onChange={(v) => {
               setRateColorScaleRangeType(v);
             }}
