@@ -202,9 +202,19 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
       const p = transform.invert(d3.pointer(e));
       const i = delaunay.find(...p);
       const county = Object.values(data)[i];
-      setHoveredCountyId(county.fips);
+
+      const distance = Math.hypot(
+        p[0] - xScale(county.population),
+        p[1] - yScale(county.zScore)
+      );
+
+      if (distance < 20) {
+        setHoveredCountyId(county.fips);
+      } else {
+        setHoveredCountyId(null);
+      }
     },
-    [delaunay, data, setHoveredCountyId]
+    [delaunay, data, setHoveredCountyId, xScale, yScale]
   );
 
   useEffect(() => {
