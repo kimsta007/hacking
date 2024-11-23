@@ -12,7 +12,7 @@ const originalWidth = 500;
 const originalHeight = 200;
 const width = originalWidth * dpr;
 const height = originalHeight * dpr;
-const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+const margin = { top: 0, right: 0, bottom: 0, left: 5 };
 const W = originalWidth - margin.left - margin.right;
 const H = originalHeight - margin.top - margin.bottom;
 
