@@ -29,6 +29,17 @@ function path(d, ctx, x, y, dimensions, colorScale) {
 
 const axis = d3.axisTop();
 
+const tickFormat = (id, axis, value) => {
+  if (axis === "population") {
+    if (id === "globalPCP") {
+      return value / 1000000 + "M";
+    } else {
+      return value / 1000 + "K";
+    }
+  }
+  return value;
+};
+
 function PCP({ id, data, colorScale }) {
   const canvasBackgroundRef = useRef(null);
   const canvasForegroundRef = useRef(null);
@@ -123,16 +134,12 @@ function PCP({ id, data, colorScale }) {
     g.append("g")
       .attr("class", "axis")
       .each(function (d) {
-        if (d === "population") {
-          d3.select(this).call(
-            axis
-              .scale(xScale[d])
-              .tickSize(-6)
-              .tickFormat((a) => a / 1000000 + "M")
-          );
-        } else {
-          d3.select(this).call(axis.scale(xScale[d]).tickSize(-6));
-        }
+        d3.select(this).call(
+          axis
+            .scale(xScale[d])
+            .tickSize(-6)
+            .tickFormat((a) => tickFormat(id, d, a))
+        );
       })
       .selectAll(".tick text")
       .attr("dy", "2em")
