@@ -45,6 +45,8 @@ const datasetOptions = Object.keys(DATASETS);
 
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
+const colorPaletteRateMinMax = [...d3.schemeReds[9]];
+
 colorPaletteRate[5] = "#eee";
 colorPaletteSurprise[5] = "#eee";
 
@@ -111,7 +113,11 @@ function App() {
                 ? dataSummary.rateRangeIQR
                 : dataSummary.rateRange
             )
-            .range(colorPaletteRate)
+            .range(
+              rateColorScaleRangeType === "IQR"
+                ? colorPaletteRate
+                : colorPaletteRateMinMax
+            )
         : null,
     [dataSummary, rateColorScaleRangeType]
   );
@@ -137,7 +143,11 @@ function App() {
                 ? stateDataSummary.rateRangeIQR
                 : stateDataSummary.rateRange
             )
-            .range(colorPaletteRate)
+            .range(
+              rateColorScaleRangeType === "IQR"
+                ? colorPaletteRate
+                : colorPaletteRateMinMax
+            )
         : null,
     [stateDataSummary, rateColorScaleRangeType]
   );

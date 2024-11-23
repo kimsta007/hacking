@@ -66,7 +66,7 @@ function StateMap({ plot, colorScale, range }) {
 
       g.append("g")
         .append("path")
-        .attr("fill", "#f0f0f0")
+        .attr("fill", "#FFF")
         .attr("pointer-events", "none")
         .attr("stroke", "#999")
         .attr("stroke-width", 0.35)
@@ -77,8 +77,8 @@ function StateMap({ plot, colorScale, range }) {
         .selectAll("path")
         .data(topojson.feature(us, us.objects.states).features)
         .join("path")
-        .attr("fill", "#f0f0f0")
-        .attr("stroke", "#999")
+        .attr("fill", "#FFF")
+        .attr("stroke", "#AAA")
         .attr("stroke-width", 0.5)
         .attr("d", path)
         .on("dblclick", (event, d) => {
