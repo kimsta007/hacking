@@ -37,6 +37,8 @@ const statesOptions = states.map((state) => ({
   label: state.name,
 }));
 
+const datasetOptions = Object.keys(DATASETS);
+
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
 colorPaletteRate[5] = "#eee";
@@ -234,14 +236,15 @@ function App() {
           </Title>
 
           <div style={{ flex: 1, overflow: "scroll" }}>
-            <Text>Dataset:</Text>
-            <SegmentedControl
-              orientation="vertical"
-              fullWidth
-              onChange={(id) => setCurrentDataset(DATASETS[id])}
-              data={Object.keys(DATASETS)}
+            <Text>Dataset: </Text>
+            <Select
+              data={datasetOptions}
+              value={currentDataset.id}
+              onChange={(value) => {
+                setCurrentDataset(DATASETS[value]);
+              }}
+              mb="md"
             />
-            <Divider my="md" />
             <Select
               data={statesOptions}
               placeholder="State"
@@ -311,6 +314,7 @@ function App() {
             <Badge color="gray" mr="md">
               DATA
             </Badge>
+
             <Text display={"inline-block"}>{currentDataset?.description}</Text>
           </Box>
 

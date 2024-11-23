@@ -12,7 +12,7 @@
   "Obesity": {
     "id": "Obesity",
     "path": "data/v2/obesity.csv",
-    "description": "Percentage of the adult population (age 18 and older) that reports a body mass index (BMI) greater than or equal to 30 kg/m2 (2022)"
+    "description": "Percentage of the adult population (age >= 18) that reports a body mass index (BMI) >= 30 kg/m2 (2022)"
   },
   "Population Change": {
     "id": "Population Change",
