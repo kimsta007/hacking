@@ -358,7 +358,7 @@ function App() {
           </Box>
         </AppShell.Navbar>
         <AppShell.Main bg={"#fff"}>
-          <Box w={1032}>
+          <Box w={1032} style={{ margin: "auto" }}>
             {data &&
               dataSummary &&
               !isLoading &&
