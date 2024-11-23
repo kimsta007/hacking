@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import * as d3 from "d3";
 import classes from "./Map.module.css";
 
-const svgWidth = 500;
-const svgHeight = 40;
-const legendWidth = 460;
+const svgWidth = 350;
+const svgHeight = 30;
+const legendWidth = 320;
 const legendHeight = 20;
 
 function Legend({ colorScale }) {

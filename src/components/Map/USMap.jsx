@@ -119,8 +119,8 @@ function USMap({ plot, colorScale, range }) {
 
   return (
     <div>
-      <Legend colorScale={colorScale} range={range} />
       <div className={classes.map} style={{ height, width }}>
+        <Legend colorScale={colorScale} range={range} />
         <svg ref={svgRef} width={width} height={height} className="mapSvg" />
         <ToolTip
           countyData={data[hoveredCountyId]}

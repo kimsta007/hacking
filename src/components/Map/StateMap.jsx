@@ -118,10 +118,9 @@ function StateMap({ plot, colorScale, range }) {
 
   return (
     <div>
-      <Legend colorScale={colorScale} range={range} />
-
       <div className={classes.map} style={{ height, width }}>
         <svg ref={svgRef} width={width} height={height} className="mapSvg" />
+        <Legend colorScale={colorScale} range={range} />
         <ToolTip
           countyData={data[hoveredCountyId]}
           plot={plot}

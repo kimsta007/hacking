@@ -18,3 +18,10 @@
   overflow: hidden;
   border: 1px solid #000;
 }
+
+.legend {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: white;
+}
