@@ -89,7 +89,6 @@ function App() {
   );
 
   const uiElements = useAppStore((state) => state.uiElements);
-  const [stateValue, setStateValue] = useState(null);
 
   const colorScaleSurprise = useMemo(
     () => d3.scaleQuantile().domain(surpriseRange).range(colorPaletteSurprise),
@@ -268,9 +267,8 @@ function App() {
           <Select
             data={statesOptions}
             placeholder="State"
-            value={stateValue ? stateValue.value : null}
+            value={selectedState ? selectedState.fips : null}
             onChange={(_value, option) => {
-              setStateValue(option);
               if (option) {
                 setSelectedState({
                   fips: option.value,
@@ -282,6 +280,7 @@ function App() {
             }}
             mb="md"
             searchable
+            clearable
           />
           <Text>Rate Color Range: </Text>
           <Select

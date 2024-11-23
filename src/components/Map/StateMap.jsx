@@ -5,9 +5,10 @@ import * as topojson from "topojson-client";
 import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
 import ToolTip from "./ToolTip";
-import us from "../../data/us-10m.v1.json";
-import classes from "./Map.module.css";
 import Legend from "./Legend";
+import us from "../../data/us-10m.v1.json";
+import STATES from "../../data/states.json";
+import classes from "./Map.module.css";
 
 const width = 500;
 const height = 300;
@@ -15,6 +16,7 @@ const height = 300;
 function StateMap({ plot, colorScale, range }) {
   const data = useAppStore((state) => state.stateData);
   const selectedState = useAppStore((state) => state.selectedState);
+  const setSelectedState = useAppStore((state) => state.setSelectedState);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
 
   const { svgRef, gRef, tooltipX, tooltipY, hoveredCountyId, zoom } = useSVGMap(
@@ -73,6 +75,24 @@ function StateMap({ plot, colorScale, range }) {
 
       g.append("g")
         .selectAll("path")
+        .data(topojson.feature(us, us.objects.states).features)
+        .join("path")
+        .attr("fill", "#f0f0f0")
+        .attr("stroke", "#999")
+        .attr("stroke-width", 0.5)
+        .attr("d", path)
+        .on("dblclick", (event, d) => {
+          console.log(d);
+          const fips = Math.floor(d.id);
+          const state = STATES.find((s) => +s.fips === fips);
+          setSelectedState({
+            fips: state.fips,
+            name: state.name,
+          });
+        });
+
+      g.append("g")
+        .selectAll("path")
         .data(counties)
         .join("path")
         .attr("d", path)
@@ -87,19 +107,8 @@ function StateMap({ plot, colorScale, range }) {
         .on("mouseout", () => {
           setHoveredCountyId(null);
         });
-
-      g.append("g")
-        .append("path")
-        .attr("fill", "none")
-        .attr("pointer-events", "none")
-        .attr("stroke", "#999")
-        .attr("stroke-width", 0.5)
-        .attr("stroke-linejoin", "round")
-        .attr(
-          "d",
-          path(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-        );
     }
+
     load();
   }, [
     svgRef,
@@ -110,6 +119,7 @@ function StateMap({ plot, colorScale, range }) {
     colorScale,
     plot,
     stateFips,
+    setSelectedState,
   ]);
 
   if (!stateFips || !data) {

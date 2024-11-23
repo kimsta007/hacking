@@ -14,3 +14,12 @@
   display: flex;
   align-items: center;
 }
+
+
+.mantine-Select-option {
+  &[data-checked] {
+    background-color: var(--mantine-color-blue-5);
+    color: var(--mantine-color-red-0);
+    font-weight: 500;
+  }
+}

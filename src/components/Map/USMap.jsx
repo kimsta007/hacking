@@ -8,6 +8,8 @@ import { useSVGMap } from "./useSVGMap";
 import ToolTip from "./ToolTip";
 import Legend from "./Legend";
 import us from "../../data/us-10m.v1.json";
+import STATES from "../../data/states.json";
+
 import classes from "./Map.module.css";
 
 const width = 500;
@@ -16,6 +18,7 @@ const height = 300;
 function USMap({ plot, colorScale, range }) {
   const data = useAppStore((state) => state.data);
   const selectedState = useAppStore((state) => state.selectedState);
+  const setSelectedState = useAppStore((state) => state.setSelectedState);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
 
   const { svgRef, gRef, tooltipX, tooltipY, hoveredCountyId, zoom } = useSVGMap(
@@ -73,6 +76,14 @@ function USMap({ plot, colorScale, range }) {
         )
         .attr("data-id", (d) => d.id)
         .attr("stroke", "#AAA")
+        .on("dblclick", (event, d) => {
+          const fips = Math.floor(+d.id / 1000);
+          const state = STATES.find((s) => +s.fips === fips);
+          setSelectedState({
+            fips: state.fips,
+            name: state.name,
+          });
+        })
         .on("mouseover", (event, d) => {
           setHoveredCountyId(d.id);
         })
@@ -115,6 +126,7 @@ function USMap({ plot, colorScale, range }) {
     colorScale,
     plot,
     selectedState,
+    setSelectedState,
   ]);
 
   return (

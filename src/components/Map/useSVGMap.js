@@ -45,7 +45,7 @@ export function useSVGMap(width, height) {
   }, [transform, zoom]);
 
   useEffect(() => {
-    if (prevHoveredCountyId.current) {
+    if (prevHoveredCountyId.current && gRef.current) {
       const e = gRef.current.select(
         `[data-id="${prevHoveredCountyId.current}"]`
       );
@@ -73,7 +73,6 @@ export function useSVGMap(width, height) {
 
       let x = elemRect.left + elemRect.width / 2;
       let y = elemRect.top + elemRect.height + 10;
-
 
       if (x < parentRect.left) {
         x = parentRect.left;
