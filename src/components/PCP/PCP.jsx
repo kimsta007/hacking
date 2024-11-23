@@ -123,7 +123,16 @@ function PCP({ id, data, colorScale }) {
     g.append("g")
       .attr("class", "axis")
       .each(function (d) {
-        d3.select(this).call(axis.scale(xScale[d]).tickSize(-6));
+        if (d === "population") {
+          d3.select(this).call(
+            axis
+              .scale(xScale[d])
+              .tickSize(-6)
+              .tickFormat((a) => a / 1000000 + "M")
+          );
+        } else {
+          d3.select(this).call(axis.scale(xScale[d]).tickSize(-6));
+        }
       })
       .selectAll(".tick text")
       .attr("dy", "2em")
