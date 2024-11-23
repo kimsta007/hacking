@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   AppShell,
   Badge,
   Box,
@@ -11,6 +12,7 @@ import {
   Group,
   Loader,
   MantineProvider,
+  Modal,
   Text,
   Title,
 } from "@mantine/core";
@@ -32,6 +34,7 @@ import TYPOLOGIES from "./data/typologies.json";
 import "@mantine/core/styles.css";
 import "./App.css";
 import { useDisclosure } from "@mantine/hooks";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 const statesOptions = states.map((state) => ({
   value: state.fips,
@@ -53,6 +56,9 @@ function App() {
   const [typologies, setTypologies] = useState(
     TYPOLOGIES.map((t) => ({ ...t, selected: true }))
   );
+
+  const [openedInfoModal, { open: openInfoModal, close: closeInfoModal }] =
+    useDisclosure(false);
 
   const isAllSelected = useMemo(() => {
     return typologies.every((t) => t.selected);
@@ -239,18 +245,34 @@ function App() {
         padding="md"
       >
         <AppShell.Header>
-          <Group h="100%" px="md">
-            <Burger
-              opened={desktopOpened}
-              onClick={toggleDesktop}
-              visibleFrom="sm"
-              size="sm"
-            />
-            <Title order={4} mr={100}>
-              Surprise Explora
-            </Title>
-            <Badge color="gray">DATA</Badge>
-            <Text display={"inline-block"}>{currentDataset?.description}</Text>
+          <Group h="100%" px="0" justify="space-between">
+            <Group h="100%" px="md">
+              <Burger
+                opened={desktopOpened}
+                onClick={toggleDesktop}
+                visibleFrom="sm"
+                size="sm"
+              />
+              <Title order={4} mr={100}>
+                Surprise Explora
+              </Title>
+              <Badge color="gray">DATA</Badge>
+              <Text display={"inline-block"}>
+                {currentDataset?.description}
+              </Text>
+            </Group>
+            <Group h="100%" px="md">
+              <ActionIcon
+                variant="default"
+                aria-label="Info"
+                onClick={openInfoModal}
+              >
+                <IconInfoCircle
+                  style={{ width: "70%", height: "70%" }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Group>
           </Group>
         </AppShell.Header>
         <AppShell.Navbar p="md" style={{ overflow: "scroll" }}>
@@ -317,27 +339,12 @@ function App() {
             ))}
           </Group>
           <Divider my="md" />
-          <Text size="sm">
-            Surprise Map is a visualization technique that weights event data
-            relative to a set of spatial models. Unexpected events (those that
-            deviate from prior beliefs over the model space) are visualized more
-            prominently than those that follow expected patterns.
-          </Text>
-          <Divider my="md" />
           <Box>
             UI Elements
             <OrderUIElements />
           </Box>
         </AppShell.Navbar>
         <AppShell.Main bg={"#fff"}>
-          {/* <Box className="header-data-info">
-            <Badge color="gray" mr="md">
-              DATA
-            </Badge>
-
-            <Text display={"inline-block"}>{currentDataset?.description}</Text>
-          </Box> */}
-
           <Box w={1032}>
             {data &&
               dataSummary &&
@@ -458,9 +465,24 @@ function App() {
             )}
 
             {!currentDataset && <Text>No data selected</Text>}
+            <Modal
+              opened={openedInfoModal}
+              onClose={closeInfoModal}
+              title="Info"
+              centered
+            >
+              <Text size="sm">
+                Surprise Map is a visualization technique that weights event
+                data relative to a set of spatial models. Unexpected events
+                (those that deviate from prior beliefs over the model space) are
+                visualized more prominently than those that follow expected
+                patterns.
+              </Text>
+            </Modal>
           </Box>
         </AppShell.Main>
       </AppShell>
+
       <div
         id="tooltipContainer"
         style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}
