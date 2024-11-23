@@ -75,6 +75,14 @@ function App() {
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
 
+  const rateColorScaleRangeType = useAppStore(
+    (state) => state.rateColorScaleRangeType
+  );
+
+  const setRateColorScaleRangeType = useAppStore(
+    (state) => state.setRateColorScaleRangeType
+  );
+
   const uiElements = useAppStore((state) => state.uiElements);
   const [stateValue, setStateValue] = useState(null);
 
@@ -88,10 +96,14 @@ function App() {
       dataSummary
         ? d3
             .scaleQuantile()
-            .domain(dataSummary.rateRange)
+            .domain(
+              rateColorScaleRangeType === "IQR"
+                ? dataSummary.rateRangeIQR
+                : dataSummary.rateRange
+            )
             .range(colorPaletteRate)
         : null,
-    [dataSummary]
+    [dataSummary, rateColorScaleRangeType]
   );
 
   const colorScaleStateSurprise = useMemo(
@@ -284,6 +296,14 @@ function App() {
               UI Elements
               <OrderUIElements />
             </Box>
+            <Select
+              data={["MinMax", "IQR"]}
+              placeholder="Rate color scale range"
+              value={rateColorScaleRangeType}
+              onChange={(v) => {
+                setRateColorScaleRangeType(v);
+              }}
+            />
           </div>
         </AppShell.Navbar>
         <AppShell.Main bg={"#fff"}>
@@ -295,7 +315,8 @@ function App() {
           </Box>
 
           <Box w={1032}>
-            {data && dataSummary &&
+            {data &&
+              dataSummary &&
               !isLoading &&
               uiElements.map((elem) => {
                 if (!elem.visible) return null;
@@ -304,7 +325,11 @@ function App() {
                     <Grid gutter={0} key={elem.id} mb="md">
                       <Grid.Col span={6}>
                         <div>US Choropleth Map</div>
-                        <USMap plot="rate" colorScale={colorScaleRate} range={dataSummary.rateRange} />
+                        <USMap
+                          plot="rate"
+                          colorScale={colorScaleRate}
+                          range={dataSummary.rateRange}
+                        />
                       </Grid.Col>
                       {selectedState && (
                         <Grid.Col span={6}>

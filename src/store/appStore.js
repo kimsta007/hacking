@@ -73,6 +73,10 @@ export const useAppStore = create(
       { id: "pcp", visible: true },
     ],
     setUIElements: (uiElements) => set(() => ({ uiElements })),
+
+    rateColorScaleRangeType: "MinMax", // MinMax or IQR 
+    setRateColorScaleRangeType: (range) =>
+      set(() => ({ rateColorScaleRangeType: range })),
   }))
 );
 
