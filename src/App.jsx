@@ -2,6 +2,7 @@ import {
   AppShell,
   Badge,
   Box,
+  Burger,
   Button,
   Center,
   Chip,
@@ -10,7 +11,6 @@ import {
   Group,
   Loader,
   MantineProvider,
-  SegmentedControl,
   Text,
   Title,
 } from "@mantine/core";
@@ -31,6 +31,7 @@ import TYPOLOGIES from "./data/typologies.json";
 
 import "@mantine/core/styles.css";
 import "./App.css";
+import { useDisclosure } from "@mantine/hooks";
 
 const statesOptions = states.map((state) => ({
   value: state.fips,
@@ -56,6 +57,8 @@ function App() {
   const isAllSelected = useMemo(() => {
     return typologies.every((t) => t.selected);
   }, [typologies]);
+
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   // all data
   const data = useAppStore((state) => state.data);
@@ -228,99 +231,113 @@ function App() {
   return (
     <MantineProvider>
       <AppShell
+        header={{ height: 60 }}
         navbar={{
           width: 300,
           breakpoint: "sm",
+          collapsed: { desktop: !desktopOpened },
         }}
         padding="md"
       >
-        <AppShell.Navbar p="md" style={{ borderRight: "1px solid #000" }}>
-          <Title order={4} mb="16">
-            Surprise Explora
-          </Title>
-
-          <div style={{ flex: 1, overflow: "scroll" }}>
-            <Text>Dataset: </Text>
-            <Select
-              data={datasetOptions}
-              value={currentDataset.id}
-              onChange={(value) => {
-                setCurrentDataset(DATASETS[value]);
-              }}
-              mb="md"
+        <AppShell.Header>
+          <Group h="100%" px="md">
+            <Burger
+              opened={desktopOpened}
+              onClick={toggleDesktop}
+              visibleFrom="sm"
+              size="sm"
             />
-            <Select
-              data={statesOptions}
-              placeholder="State"
-              value={stateValue ? stateValue.value : null}
-              onChange={(_value, option) => {
-                setStateValue(option);
-                if (option) {
-                  setSelectedState({
-                    fips: option.value,
-                    name: option.label,
-                  });
-                } else {
-                  setSelectedState(null);
-                }
-              }}
-              searchable
-            />
+            <Title order={4} mr={100}>
+              Surprise Explora
+            </Title>
+            <Badge color="gray">DATA</Badge>
+            <Text display={"inline-block"}>{currentDataset?.description}</Text>
+          </Group>
+        </AppShell.Header>
+        <AppShell.Navbar p="md" style={{ overflow: "scroll" }}>
+          <Text>Dataset: </Text>
+          <Select
+            data={datasetOptions}
+            value={currentDataset.id}
+            onChange={(value) => {
+              setCurrentDataset(DATASETS[value]);
+            }}
+            mb="md"
+          />
+          <Text>State: </Text>
+          <Select
+            data={statesOptions}
+            placeholder="State"
+            value={stateValue ? stateValue.value : null}
+            onChange={(_value, option) => {
+              setStateValue(option);
+              if (option) {
+                setSelectedState({
+                  fips: option.value,
+                  name: option.label,
+                });
+              } else {
+                setSelectedState(null);
+              }
+            }}
+            mb="md"
+            searchable
+          />
+          <Text>Rate Color Range: </Text>
+          <Select
+            data={["MinMax", "IQR"]}
+            placeholder="Rate color scale range"
+            value={rateColorScaleRangeType}
+            onChange={(v) => {
+              setRateColorScaleRangeType(v);
+            }}
+          />
 
-            <Divider my="md" />
-            <Group justify="space-between">
-              <Text>Typology</Text>
-              <Button
+          <Divider my="md" />
+          <Group justify="space-between">
+            <Text>Typology</Text>
+            <Button
+              size="xs"
+              variant="default"
+              onClick={handleToggleSelectAllTypologies}
+            >
+              {isAllSelected ? "De-select All" : "Select All"}
+            </Button>
+          </Group>
+          <Group gap="xs">
+            {typologies.map((typology) => (
+              <Chip
+                key={typology.name}
                 size="xs"
-                variant="default"
-                onClick={handleToggleSelectAllTypologies}
+                checked={typology.selected}
+                onClick={handleTypologyClick}
+                value={typology.name}
               >
-                {isAllSelected ? "De-select All" : "Select All"}
-              </Button>
-            </Group>
-            <Group gap="xs">
-              {typologies.map((typology) => (
-                <Chip
-                  key={typology.name}
-                  size="xs"
-                  checked={typology.selected}
-                  onClick={handleTypologyClick}
-                  value={typology.name}
-                >
-                  {typology.name}
-                </Chip>
-              ))}
-            </Group>
-            <Divider my="md" />
-            <Text size="sm">
-              Surprise Map is a visualization technique that weights event data
-              relative to a set of spatial models. Unexpected events (those that
-              deviate from prior beliefs over the model space) are visualized
-              more prominently than those that follow expected patterns.
-            </Text>
-            <Divider my="md" />
-            <Box>
-              UI Elements
-              <OrderUIElements />
-            </Box>
-            <Select
-              data={["MinMax", "IQR"]}
-              placeholder="Rate color scale range"
-              value={rateColorScaleRangeType}
-              onChange={(v) => {
-                setRateColorScaleRangeType(v);
-              }}
-            />
-          </div>
+                {typology.name}
+              </Chip>
+            ))}
+          </Group>
+          <Divider my="md" />
+          <Text size="sm">
+            Surprise Map is a visualization technique that weights event data
+            relative to a set of spatial models. Unexpected events (those that
+            deviate from prior beliefs over the model space) are visualized more
+            prominently than those that follow expected patterns.
+          </Text>
+          <Divider my="md" />
+          <Box>
+            UI Elements
+            <OrderUIElements />
+          </Box>
         </AppShell.Navbar>
         <AppShell.Main bg={"#fff"}>
-          <Box className="header-data-info">
+          {/* <Box className="header-data-info">
             <Badge color="gray" mr="md">
               DATA
             </Badge>
 
             <Text display={"inline-block"}>{currentDataset?.description}</Text>
-          </Box>
+          </Box> */}
 
           <Box w={1032}>
             {data &&
