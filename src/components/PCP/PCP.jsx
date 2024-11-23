@@ -32,8 +32,9 @@ const axis = d3.axisTop();
 function PCP({ id, data, colorScale }) {
   const canvasBackgroundRef = useRef(null);
   const canvasForegroundRef = useRef(null);
+  const canvasForegroundActiveRef = useRef(null);
   const svgRef = useRef(null);
-  // const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
+  const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
   // const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
   const brushView = useAppStore((state) => state.brushView);
   const setBrushView = useAppStore((state) => state.setBrushView);
@@ -218,6 +219,23 @@ function PCP({ id, data, colorScale }) {
   }, [data, xScale, yScale, brushedCountyIds, dimensions, colorScale]);
 
   useEffect(() => {
+    const foregroundActive = canvasForegroundActiveRef.current.getContext("2d");
+    foregroundActive.save();
+    foregroundActive.clearRect(0, 0, width, height);
+    foregroundActive.scale(dpr, dpr);
+    foregroundActive.translate(margin.left, margin.top);
+
+    foregroundActive.strokeStyle = "rgba(0,0,0, 1)";
+    foregroundActive.lineWidth = 2;
+
+    const d = data[hoveredCountyId];
+    if (d) {
+      path(d, foregroundActive, xScale, yScale, dimensions, () => "#000");
+    }
+    foregroundActive.restore();
+  }, [hoveredCountyId, colorScale, data, xScale, yScale, dimensions]);
+
+  useEffect(() => {
     if (brushView !== id) {
       d3.select(svgRef.current).selectAll(".brush").call(d3.brush().clear);
     }
@@ -239,6 +257,16 @@ function PCP({ id, data, colorScale }) {
         />
         <canvas
           ref={canvasForegroundRef}
+          width={width}
+          height={height}
+          className="pcpCanvas"
+          style={{
+            width: originalWidth,
+            height: originalHeight,
+          }}
+        />
+        <canvas
+          ref={canvasForegroundActiveRef}
           width={width}
           height={height}
           className="pcpCanvas"
