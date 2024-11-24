@@ -13,6 +13,7 @@ import {
   Loader,
   MantineProvider,
   Modal,
+  Skeleton,
   Text,
   Title,
 } from "@mantine/core";
@@ -362,7 +363,7 @@ function App() {
             {data &&
               dataSummary &&
               !isLoading &&
-              uiElements.map((elem) => {
+              uiElements.map((elem, idx) => {
                 if (!elem.visible) return null;
                 if (elem.id === "choroplethMap") {
                   return (
@@ -375,18 +376,30 @@ function App() {
                           range={dataSummary.rateRange}
                         />
                       </Grid.Col>
-                      {selectedState && (
-                        <Grid.Col span={6}>
-                          <div>{selectedState?.name} Choropleth Map</div>
-                          {stateDataSummary && (
-                            <StateMap
-                              plot="rate"
-                              colorScale={colorScaleStateRate}
-                              range={stateDataSummary.rateRange}
+                      <Grid.Col span={6}>
+                        {selectedState ? (
+                          <>
+                            <div>{selectedState?.name} Choropleth Map</div>
+                            {stateDataSummary && (
+                              <StateMap
+                                plot="rate"
+                                colorScale={colorScaleStateRate}
+                                range={stateDataSummary.rateRange}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <div>No state selected</div>
+                            <Skeleton
+                              animate={false}
+                              height={300}
+                              mt={0}
+                              radius="0"
                             />
-                          )}
-                        </Grid.Col>
-                      )}
+                          </>
+                        )}
+                      </Grid.Col>
                     </Grid>
                   );
                 } else if (elem.id === "surpriseMap") {
