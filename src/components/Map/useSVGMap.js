@@ -38,9 +38,9 @@ export function useSVGMap(width, height) {
   useEffect(() => {
     gRef.current?.attr("transform", transform);
     zoom.transform(d3.select(svgRef.current), transform);
-    if (Math.abs(transform.k - prevTransform.current.k) > 1) {
+    if (Math.abs(transform.k - prevTransform.current.k) > .2) {
       prevTransform.current = transform;
-      gRef.current?.attr("stroke-width", 1 / transform.k);
+      gRef.current?.attr("stroke-width", 0.25 / transform.k);
     }
   }, [transform, zoom]);
 

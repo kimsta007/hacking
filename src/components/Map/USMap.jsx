@@ -66,6 +66,7 @@ function USMap({ plot, colorScale, range }) {
         .data(simplifiedCounties)
         .join("path")
         .attr("d", path)
+        .attr("stroke-width", 0.25)
         .attr("opacity", (d) => {
           // get 2 digit fips code and match with selected state's fips
           const fips = Math.floor(+d.id / 1000);
