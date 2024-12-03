@@ -97,7 +97,7 @@ function StateMap({ plot, colorScale, range }) {
         .join("path")
         .attr("d", path)
         .attr("fill", (d) =>
-          data[d.id] ? colorScale(data[d.id][plot]) : "#ffffff"
+          data[d.id] ? colorScale(data[d.id][plot]) : "url(#crosshatch)"
         )
         .attr("data-id", (d) => d.id)
         .attr("stroke", "#AAA")
@@ -129,7 +129,24 @@ function StateMap({ plot, colorScale, range }) {
   return (
     <div>
       <div className={classes.map} style={{ height, width }}>
-        <svg ref={svgRef} width={width} height={height} className="mapSvg" />
+        <svg ref={svgRef} width={width} height={height} className="mapSvg">
+          <defs>
+            <pattern
+              id="crosshatch"
+              patternUnits="userSpaceOnUse"
+              width="3"
+              height="3"
+            >
+              <image
+                xlinkHref="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4JyBoZWlnaHQ9JzgnPgogIDxyZWN0IHdpZHRoPSc4JyBoZWlnaHQ9JzgnIGZpbGw9JyNmZmYnLz4KICA8cGF0aCBkPSdNMCAwTDggOFpNOCAwTDAgOFonIHN0cm9rZS13aWR0aD0nMC41JyBzdHJva2U9JyNhYWEnLz4KPC9zdmc+Cg=="
+                x="0"
+                y="0"
+                width="3"
+                height="3"
+              ></image>
+            </pattern>
+          </defs>
+        </svg>
         <Legend colorScale={colorScale} range={range} />
         <ToolTip
           countyData={data[hoveredCountyId]}
