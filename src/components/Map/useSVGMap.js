@@ -113,7 +113,7 @@ export function useSVGMap(width, height) {
       e.select(`[data-id="${countyId}"]`)
         .classed("county-brushed", true)
         .attr("stroke", "#000")
-        .attr("stroke-width", 3 / transform.k)
+        .attr("stroke-width", 1 / transform.k)
         .raise();
     });
   }, [brushedCountyIds, transform, svgRef]);
