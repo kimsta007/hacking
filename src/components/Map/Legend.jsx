@@ -6,7 +6,7 @@ import classes from "./Map.module.css";
 const svgWidth = 350;
 const svgHeight = 30;
 const legendWidth = 320;
-const legendHeight = 20;
+const legendHeight = 10;
 
 function Legend({ colorScale }) {
   const legendRef = useRef(null);
@@ -57,7 +57,7 @@ function Legend({ colorScale }) {
       .enter()
       .append("text")
       .attr("x", (d, i) => i * (legendWidth / (legendLabels.length - 1)))
-      .attr("y", legendHeight - 10)
+      .attr("y", legendHeight)
       .attr("text-anchor", "middle")
       .style("font-size", "10px")
       .text((d) => Math.round(d * 100) / 100); 
