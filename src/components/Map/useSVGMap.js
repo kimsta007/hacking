@@ -134,8 +134,8 @@ export function useSVGMap(width, height) {
     }
 
     const newZoom = d3.zoomIdentity
-      .translate(width / 2, height / 2)
-      .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
+      .translate(width / 2, height / 2 - 15)
+      .scale(Math.min(8, 0.85 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
       .translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
 
     setTransform(newZoom);
