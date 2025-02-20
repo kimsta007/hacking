@@ -32,7 +32,7 @@ function USMap({ plot, colorScale, range }) {
     }
 
     // d3.select(svgRef.current).selectAll("*").remove();
-    console.log("Render Map");
+
     const svg = d3
       .select(svgRef.current)
       .attr("width", width)
@@ -76,7 +76,7 @@ function USMap({ plot, colorScale, range }) {
           data[d.id] ? colorScale(data[d.id][plot]) : "url(#crosshatch)"
         )
         .attr("data-id", (d) => d.id)
-        .attr("stroke", "#AAA")
+        .attr("stroke", "#fff")
         .on("dblclick", (event, d) => {
           const fips = Math.floor(+d.id / 1000);
           const state = STATES.find((s) => +s.fips === fips);

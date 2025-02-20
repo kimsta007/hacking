@@ -74,7 +74,7 @@ export const useAppStore = create(
     ],
     setUIElements: (uiElements) => set(() => ({ uiElements })),
 
-    rateColorScaleRangeType: "MinMax", // MinMax or IQR 
+    rateColorScaleRangeType: "IQR", // MinMax or IQR 
     setRateColorScaleRangeType: (range) =>
       set(() => ({ rateColorScaleRangeType: range })),
   }))

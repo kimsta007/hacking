@@ -50,7 +50,7 @@ export function useSVGMap(width, height) {
         `[data-id="${prevHoveredCountyId.current}"]`
       );
       if (!e.empty() && !e.classed("county-brushed")) {
-        e.attr("stroke", "#AAA").attr("stroke-width", null);
+        e.attr("stroke", "#fff").attr("stroke-width", 0.5);
       }
     }
 
@@ -105,8 +105,8 @@ export function useSVGMap(width, height) {
     const e = d3.select(svgRef.current);
 
     e.selectAll(".county-brushed")
-      .attr("stroke", "#AAA")
-      .attr("stroke-width", null)
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 0.5)
       .classed("county-brushed", false);
 
     brushedCountyIds.forEach((countyId) => {

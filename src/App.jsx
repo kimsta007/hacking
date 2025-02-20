@@ -14,6 +14,7 @@ import {
   MantineProvider,
   Modal,
   Skeleton,
+  Image,
   Text,
   Title,
 } from "@mantine/core";
@@ -31,6 +32,7 @@ import OrderUIElements from "./components/OrderUIElements/OrderUIElements";
 import states from "./data/states.json";
 import DATASETS from "./data/datasets.json";
 import TYPOLOGIES from "./data/typologies.json";
+import logo from "./data/logo.png";
 
 import "@mantine/core/styles.css";
 import "./App.css";
@@ -45,9 +47,20 @@ const statesOptions = states.map((state) => ({
 const datasetOptions = Object.keys(DATASETS);
 
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
-const colorPaletteRate = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRateMinMax = [...d3.schemeReds[9]];
-
+const colorPaletteRate = [
+"#BB6B5E", 
+"#C9897E",
+"#D6A69E",
+"#E4C4BF",
+"#F1E1DF",
+"#F6F6F6",
+"#D5E3E0",
+"#ABC7C0",
+"#80ABA1",
+"#568F81",
+"#2C7362"
+];
 colorPaletteRate[5] = "#eee";
 colorPaletteSurprise[5] = "#eee";
 
@@ -115,9 +128,10 @@ function App() {
                 : dataSummary.rateRange
             )
             .range(
-              rateColorScaleRangeType === "IQR"
-                ? colorPaletteRate
-                : colorPaletteRateMinMax
+              //rateColorScaleRangeType === "IQR"
+                //? colorPaletteRate
+                //: colorPaletteRateMinMax
+                colorPaletteRate
             )
         : null,
     [dataSummary, rateColorScaleRangeType]
@@ -264,9 +278,13 @@ function App() {
                 visibleFrom="sm"
                 size="sm"
               />
-              <Title order={4} mr={100}>
+              {/* <Title order={4} mr={100}>
                 Surprise Explora
-              </Title>
+              </Title> */}
+              <img
+                src={logo}  
+                style={{ height: '40px', marginRight: '100px' }} 
+              />
               <Badge color="gray">DATA</Badge>
               <Text display={"inline-block"}>
                 {currentDataset?.description}
@@ -317,17 +335,19 @@ function App() {
             searchable
             clearable
           />
-          <Text>Rate Color Range: </Text>
-          <Select
-            data={["MinMax", "IQR"]}
-            placeholder="Rate color scale range"
-            value={rateColorScaleRangeType}
-            withCheckIcon={false}
-            onChange={(v) => {
-              setRateColorScaleRangeType(v);
-            }}
-          />
-
+          {
+           //Change colorscale, map county border, added logo, formatted side div 
+              /*   <Text>Rate Color Range: </Text>
+               <Select
+              data={["IQR", "MinMax"]}
+              placeholder="Rate color scale range"
+              value={rateColorScaleRangeType}
+              withCheckIcon={false}
+              onChange={(v) => {
+                setRateColorScaleRangeType(v);
+              }}
+              />*/
+          }
           <Divider my="md" />
           <Group justify="space-between">
             <Text>Typology</Text>
@@ -390,13 +410,15 @@ function App() {
                           </>
                         ) : (
                           <>
-                            <div>No state selected</div>
-                            <Skeleton
-                              animate={false}
-                              height={300}
-                              mt={0}
-                              radius="0"
-                            />
+                            <div style={{ 
+                                display: 'flex', 
+                                justifyContent: 'center', 
+                                alignItems: 'center', 
+                                height: '300px', 
+                                textAlign: 'center', 
+                              }}>
+                                <div style={{ fontSize: '24px' }}>Select a state! </div>
+                              </div>
                           </>
                         )}
                       </Grid.Col>
