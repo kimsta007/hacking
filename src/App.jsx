@@ -128,10 +128,9 @@ function App() {
                 : dataSummary.rateRange
             )
             .range(
-              //rateColorScaleRangeType === "IQR"
-                //? colorPaletteRate
-                //: colorPaletteRateMinMax
-                colorPaletteRate
+              rateColorScaleRangeType === "IQR"
+                ? colorPaletteRate
+                : colorPaletteRateMinMax
             )
         : null,
     [dataSummary, rateColorScaleRangeType]
@@ -336,8 +335,8 @@ function App() {
             clearable
           />
           {
-           //Change colorscale, map county border, added logo, formatted side div 
-              /*   <Text>Rate Color Range: </Text>
+             <>
+              <Text>Rate Color Range: </Text>
                <Select
               data={["IQR", "MinMax"]}
               placeholder="Rate color scale range"
@@ -346,7 +345,7 @@ function App() {
               onChange={(v) => {
                 setRateColorScaleRangeType(v);
               }}
-              />*/
+              /></>
           }
           <Divider my="md" />
           <Group justify="space-between">
