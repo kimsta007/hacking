@@ -78,7 +78,7 @@ function StateMap({ plot, colorScale, range }) {
         .data(topojson.feature(us, us.objects.states).features)
         .join("path")
         .attr("fill", "#FFF")
-        .attr("stroke", "#AAA")
+        .attr("stroke", "#fff")
         .attr("stroke-width", 0.5)
         .attr("d", path)
         .on("dblclick", (event, d) => {
@@ -100,7 +100,8 @@ function StateMap({ plot, colorScale, range }) {
           data[d.id] ? colorScale(data[d.id][plot]) : "url(#crosshatch)"
         )
         .attr("data-id", (d) => d.id)
-        .attr("stroke", "#AAA")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 0.5)
         .on("mouseover", (event, d) => {
           setHoveredCountyId(d.id);
         })
