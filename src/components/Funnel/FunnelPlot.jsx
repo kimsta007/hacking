@@ -77,8 +77,6 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
   );
 
   const contourData = useMemo(() => {
-    console.log("calculate background surprise data");
-
     if (dataSummary && data) {
       const rangePopulation = [1, dataSummary.maxPopulation];
 
@@ -153,7 +151,6 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     context.stroke();
 
     context.restore();
-    console.log("render funnel plot");
   }, [xScale, yScale, data, contourData, colorScale, dataSummary]);
 
   useEffect(() => {
@@ -261,7 +258,7 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
       const mouseMoveListener = (ev) => {
         const diff = ev.pageY - startY;
         startY = ev.pageY;
-        updateSurpriseRangeBy(diff, direction);
+        updateSurpriseRangeBy(id, diff, direction);
       };
       const mouseUpListener = () => {
         window.removeEventListener("mousemove", mouseMoveListener);
@@ -276,7 +273,7 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
         window.removeEventListener("mouseup", mouseUpListener);
       };
     },
-    [updateSurpriseRangeBy]
+    [id, updateSurpriseRangeBy]
   );
 
   return (

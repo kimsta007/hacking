@@ -26,30 +26,62 @@ export const useAppStore = create(
         : set(() => ({ dataSummary })),
 
     surpriseRange: [-1, 1],
-    updateSurpriseRangeBy: (amount, direction) =>
+    updateSurpriseRangeBy: (id, amount, direction) =>
       set((state) => {
-        if (direction === "high") {
-          let v = state.surpriseRange[1] - amount / 500;
-          if (v > 1) {
-            v = 1;
+        if (id === "globalFunnel") {
+          if (direction === "high") {
+            let v = state.surpriseRange[1] - amount / 500;
+            if (v > 1) {
+              v = 1;
+            }
+            if (v < -1) {
+              v = -1;
+            }
+            return {
+              surpriseRange: [state.surpriseRange[0], v],
+            };
+          } else {
+            let v = state.surpriseRange[0] - amount / 500;
+            if (v > 1) {
+              v = 1;
+            }
+            if (v < -1) {
+              v = -1;
+            }
+            return {
+              surpriseRange: [v, state.surpriseRange[1]],
+            };
           }
-          if (v < -1) {
-            v = -1;
-          }
-          return {
-            surpriseRange: [state.surpriseRange[0], v],
-          };
         } else {
-          let v = state.surpriseRange[0] - amount / 500;
-          if (v > 1) {
-            v = 1;
+          if (direction === "high") {
+            let v = state.stateDataSummary.surpriseRange[1] - amount / 500;
+            if (v > 1) {
+              v = 1;
+            }
+            if (v < -1) {
+              v = -1;
+            }
+            return {
+              stateDataSummary: {
+                ...state.stateDataSummary,
+                surpriseRange: [state.stateDataSummary.surpriseRange[0], v],
+              }
+            };
+          } else {
+            let v = state.stateDataSummary.surpriseRange[0] - amount / 500;
+            if (v > 1) {
+              v = 1;
+            }
+            if (v < -1) {
+              v = -1;
+            }
+            return {
+              stateDataSummary: {
+                ...state.stateDataSummary,
+                surpriseRange: [v, state.stateDataSummary.surpriseRange[1]],
+              }
+            };
           }
-          if (v < -1) {
-            v = -1;
-          }
-          return {
-            surpriseRange: [v, state.surpriseRange[1]],
-          };
         }
       }),
 

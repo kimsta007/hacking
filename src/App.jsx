@@ -13,10 +13,7 @@ import {
   Loader,
   MantineProvider,
   Modal,
-  Skeleton,
-  Image,
   Text,
-  Title,
 } from "@mantine/core";
 import { Select } from "@mantine/core";
 import * as d3 from "d3";
@@ -49,17 +46,17 @@ const datasetOptions = Object.keys(DATASETS);
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
 const colorPaletteRateMinMax = [...d3.schemeReds[9]];
 const colorPaletteRate = [
-"#BB6B5E", 
-"#C9897E",
-"#D6A69E",
-"#E4C4BF",
-"#F1E1DF",
-"#F6F6F6",
-"#D5E3E0",
-"#ABC7C0",
-"#80ABA1",
-"#568F81",
-"#2C7362"
+  "#BB6B5E",
+  "#C9897E",
+  "#D6A69E",
+  "#E4C4BF",
+  "#F1E1DF",
+  "#F6F6F6",
+  "#D5E3E0",
+  "#ABC7C0",
+  "#80ABA1",
+  "#568F81",
+  "#2C7362",
 ];
 colorPaletteRate[5] = "#eee";
 colorPaletteSurprise[5] = "#eee";
@@ -281,8 +278,8 @@ function App() {
                 Surprise Explora
               </Title> */}
               <img
-                src={logo}  
-                style={{ height: '40px', marginRight: '100px' }} 
+                src={logo}
+                style={{ height: "40px", marginRight: "100px" }}
               />
               <Badge color="gray">DATA</Badge>
               <Text display={"inline-block"}>
@@ -335,17 +332,18 @@ function App() {
             clearable
           />
           {
-             <>
+            <>
               <Text>Rate Color Range: </Text>
-               <Select
-              data={["IQR", "MinMax"]}
-              placeholder="Rate color scale range"
-              value={rateColorScaleRangeType}
-              withCheckIcon={false}
-              onChange={(v) => {
-                setRateColorScaleRangeType(v);
-              }}
-              /></>
+              <Select
+                data={["IQR", "MinMax"]}
+                placeholder="Rate color scale range"
+                value={rateColorScaleRangeType}
+                withCheckIcon={false}
+                onChange={(v) => {
+                  setRateColorScaleRangeType(v);
+                }}
+              />
+            </>
           }
           <Divider my="md" />
           <Group justify="space-between">
@@ -382,7 +380,7 @@ function App() {
             {data &&
               dataSummary &&
               !isLoading &&
-              uiElements.map((elem, idx) => {
+              uiElements.map((elem) => {
                 if (!elem.visible) return null;
                 if (elem.id === "choroplethMap") {
                   return (
@@ -409,15 +407,19 @@ function App() {
                           </>
                         ) : (
                           <>
-                            <div style={{ 
-                                display: 'flex', 
-                                justifyContent: 'center', 
-                                alignItems: 'center', 
-                                height: '300px', 
-                                textAlign: 'center', 
-                              }}>
-                                <div style={{ fontSize: '24px' }}>Select a state! </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "300px",
+                                textAlign: "center",
+                              }}
+                            >
+                              <div style={{ fontSize: "24px" }}>
+                                Select a state!{" "}
                               </div>
+                            </div>
                           </>
                         )}
                       </Grid.Col>
