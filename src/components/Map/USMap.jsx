@@ -148,8 +148,7 @@ function USMap({ plot, colorScale, range }) {
                 y="0"
                 width="3"
                 height="3"
-              >
-              </image>
+              />
             </pattern>
           </defs>
         </svg>

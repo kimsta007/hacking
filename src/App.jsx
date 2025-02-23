@@ -13,9 +13,9 @@ import {
   Loader,
   MantineProvider,
   Modal,
+  Select,
   Text,
 } from "@mantine/core";
-import { Select } from "@mantine/core";
 import * as d3 from "d3";
 
 import { USMap, StateMap } from "./components/Map";
@@ -44,7 +44,7 @@ const statesOptions = states.map((state) => ({
 const datasetOptions = Object.keys(DATASETS);
 
 const colorPaletteSurprise = [...d3.schemeRdBu[11]].reverse();
-const colorPaletteRateMinMax = [...d3.schemeReds[9]];
+// const colorPaletteRateMinMax = [...d3.schemeReds[9]];
 const colorPaletteRate = [
   "#BB6B5E",
   "#C9897E",
@@ -60,6 +60,48 @@ const colorPaletteRate = [
 ];
 colorPaletteRate[5] = "#eee";
 colorPaletteSurprise[5] = "#eee";
+
+const rateColorScales = [
+  {
+    label: "reds",
+    value: "reds",
+    d: [...d3.schemeReds[9]],
+  },
+  {
+    label: "reds reverse",
+    value: "reds-reverse",
+    d: [...d3.schemeReds[9]].reverse(),
+  },
+  {
+    label: "blues",
+    value: "blues",
+    d: [...d3.schemeBlues[9]],
+  },
+  {
+    label: "blues reverse",
+    value: "blues-reverse",
+    d: [...d3.schemeBlues[9]].reverse(),
+  },
+];
+
+const renderSelectOption = ({ option }) => (
+  <Group justify="space-between" flex="1" gap="xs">
+    {option.label}
+    <div>
+      {option.d.map((color, index) => (
+        <div
+          key={index}
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: color,
+            display: "inline-block",
+          }}
+        ></div>
+      ))}
+    </div>
+  </Group>
+);
 
 function App() {
   const [currentDataset, setCurrentDataset] = useState(
@@ -114,24 +156,24 @@ function App() {
     [surpriseRange]
   );
 
-  const colorScaleRate = useMemo(
-    () =>
-      dataSummary
-        ? d3
-            .scaleQuantile()
-            .domain(
-              rateColorScaleRangeType === "IQR"
-                ? dataSummary.rateRangeIQR
-                : dataSummary.rateRange
-            )
-            .range(
-              rateColorScaleRangeType === "IQR"
-                ? colorPaletteRate
-                : colorPaletteRateMinMax
-            )
-        : null,
-    [dataSummary, rateColorScaleRangeType]
-  );
+  const [colorScaleUSRateScheme, setColorScaleUSRateScheme] = useState("reds");
+  const [colorScaleStateRateScheme, setColorScaleStateRateScheme] =
+    useState("reds");
+
+  const colorScaleUSRate = useMemo(() => {
+    return dataSummary
+      ? d3
+          .scaleQuantile()
+          .domain(
+            rateColorScaleRangeType === "IQR"
+              ? dataSummary.rateRangeIQR
+              : dataSummary.rateRange
+          )
+          .range(
+            rateColorScales.find((a) => a.value == colorScaleUSRateScheme).d
+          )
+      : null;
+  }, [dataSummary, colorScaleUSRateScheme, rateColorScaleRangeType]);
 
   const colorScaleStateSurprise = useMemo(
     () =>
@@ -155,12 +197,11 @@ function App() {
                 : stateDataSummary.rateRange
             )
             .range(
-              rateColorScaleRangeType === "IQR"
-                ? colorPaletteRate
-                : colorPaletteRateMinMax
+              rateColorScales.find((a) => a.value == colorScaleStateRateScheme)
+                .d
             )
         : null,
-    [stateDataSummary, rateColorScaleRangeType]
+    [stateDataSummary, colorScaleStateRateScheme, rateColorScaleRangeType]
   );
 
   const handleTypologyClick = useCallback((event) => {
@@ -386,17 +427,39 @@ function App() {
                   return (
                     <Grid gutter={0} key={elem.id} mb="md">
                       <Grid.Col span={6}>
-                        <div>US Choropleth Map</div>
+                        <Group justify="space-between" mr="md">
+                          <div>US Choropleth Map</div>
+                          <Select
+                            size="sm"
+                            data={rateColorScales}
+                            value={colorScaleUSRateScheme}
+                            onChange={setColorScaleUSRateScheme}
+                            placeholder="Select color scale"
+                            renderOption={renderSelectOption}
+                            w={300}
+                          />
+                        </Group>
                         <USMap
                           plot="rate"
-                          colorScale={colorScaleRate}
+                          colorScale={colorScaleUSRate}
                           range={dataSummary.rateRange}
                         />
                       </Grid.Col>
                       <Grid.Col span={6}>
                         {selectedState ? (
                           <>
-                            <div>{selectedState?.name} Choropleth Map</div>
+                            <Group justify="space-between" mr="md">
+                              <div>{selectedState?.name} Choropleth Map</div>
+                              <Select
+                                data={rateColorScales}
+                                value={colorScaleStateRateScheme}
+                                onChange={setColorScaleStateRateScheme}
+                                placeholder="Select color scale"
+                                renderOption={renderSelectOption}
+                                w={300}
+                              />
+                            </Group>
+
                             {stateDataSummary && (
                               <StateMap
                                 plot="rate"
