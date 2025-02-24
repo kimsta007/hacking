@@ -84,6 +84,29 @@ const rateColorScales = [
   },
 ];
 
+const surpriseColorScales = [
+  {
+    label: "rdbu",
+    value: "rdbu",
+    d: [...d3.schemeRdBu[11]],
+  },
+  {
+    label: "rdbu reverse",
+    value: "rdbu-reverse",
+    d: [...d3.schemeRdBu[11]].reverse(),
+  },
+  {
+    label: "puor",
+    value: "puor",
+    d: [...d3.schemePuOr[11]],
+  },
+  {
+    label: "puor reverse",
+    value: "puor-reverse",
+    d: [...d3.schemePuOr[11]].reverse(),
+  },
+];
+
 const renderSelectOption = ({ option }) => (
   <Group justify="space-between" flex="1" gap="xs">
     {option.label}
@@ -151,14 +174,13 @@ function App() {
 
   const uiElements = useAppStore((state) => state.uiElements);
 
-  const colorScaleSurprise = useMemo(
-    () => d3.scaleQuantile().domain(surpriseRange).range(colorPaletteSurprise),
-    [surpriseRange]
-  );
-
   const [colorScaleUSRateScheme, setColorScaleUSRateScheme] = useState("reds");
   const [colorScaleStateRateScheme, setColorScaleStateRateScheme] =
     useState("reds");
+  const [colorScaleUSSurpriseScheme, setColorScaleUSSurpriseScheme] =
+    useState("rdbu");
+  const [colorScaleStateSurpriseScheme, setColorScaleStateSurpriseScheme] =
+    useState("rdbu");
 
   const colorScaleUSRate = useMemo(() => {
     return dataSummary
@@ -175,15 +197,31 @@ function App() {
       : null;
   }, [dataSummary, colorScaleUSRateScheme, rateColorScaleRangeType]);
 
+  const colorScaleSurprise = useMemo(
+    () =>
+      d3
+        .scaleQuantile()
+        .domain(surpriseRange)
+        .range(
+          surpriseColorScales.find((a) => a.value == colorScaleUSSurpriseScheme)
+            .d
+        ),
+    [surpriseRange, colorScaleUSSurpriseScheme]
+  );
+
   const colorScaleStateSurprise = useMemo(
     () =>
       stateDataSummary
         ? d3
             .scaleQuantile()
             .domain(stateDataSummary.surpriseRange)
-            .range(colorPaletteSurprise)
+            .range(
+              surpriseColorScales.find(
+                (a) => a.value == colorScaleStateSurpriseScheme
+              ).d
+            )
         : null,
-    [stateDataSummary]
+    [stateDataSummary, colorScaleStateSurpriseScheme]
   );
 
   const colorScaleStateRate = useMemo(
@@ -435,8 +473,9 @@ function App() {
                             value={colorScaleUSRateScheme}
                             onChange={setColorScaleUSRateScheme}
                             placeholder="Select color scale"
+                            allowDeselect={false}
                             renderOption={renderSelectOption}
-                            w={300}
+                            w={250}
                           />
                         </Group>
                         <USMap
@@ -454,9 +493,10 @@ function App() {
                                 data={rateColorScales}
                                 value={colorScaleStateRateScheme}
                                 onChange={setColorScaleStateRateScheme}
+                                allowDeselect={false}
                                 placeholder="Select color scale"
                                 renderOption={renderSelectOption}
-                                w={300}
+                                w={250}
                               />
                             </Group>
 
@@ -492,7 +532,19 @@ function App() {
                   return (
                     <Grid gutter={0} key={elem.id} mb="md">
                       <Grid.Col span={6}>
-                        <div>US Surprise Map</div>
+                        <Group justify="space-between" mr="md">
+                          <div>US Surprise Map</div>
+                          <Select
+                            data={surpriseColorScales}
+                            value={colorScaleUSSurpriseScheme}
+                            onChange={setColorScaleUSSurpriseScheme}
+                            allowDeselect={false}
+                            placeholder="Select color scale"
+                            renderOption={renderSelectOption}
+                            w={250}
+                          />
+                        </Group>
+
                         <USMap
                           plot="surprise"
                           colorScale={colorScaleSurprise}
@@ -501,7 +553,19 @@ function App() {
                       </Grid.Col>
                       {selectedState && (
                         <Grid.Col span={6}>
-                          <div>{selectedState?.name} Surprise Map</div>
+                          <Group justify="space-between" mr="md">
+                            <div>{selectedState?.name} Surprise Map</div>
+                            <Select
+                              data={surpriseColorScales}
+                              value={colorScaleStateSurpriseScheme}
+                              allowDeselect={false}
+                              onChange={setColorScaleStateSurpriseScheme}
+                              placeholder="Select color scale"
+                              renderOption={renderSelectOption}
+                              w={250}
+                            />
+                          </Group>
+
                           {stateDataSummary && (
                             <StateMap
                               plot="surprise"
@@ -559,7 +623,7 @@ function App() {
                           {stateDataSummary && (
                             <PCP
                               id="statePCP"
-                              colorScale={colorScaleSurprise}
+                              colorScale={colorScaleStateSurprise}
                               data={stateData}
                             />
                           )}
