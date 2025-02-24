@@ -44,7 +44,7 @@ function ToolTip({ countyData, plot, x, y }) {
             {countyData.county}
           </Text>
           <Text size="xs" c="gray" fw={500}>
-            {state.name}
+            {state?.name}
           </Text>
           <Text size="xs" tt="capitalize">
             {plot}: {countyData[plot].toFixed(2)}
