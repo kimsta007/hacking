@@ -482,6 +482,7 @@ function App() {
                           plot="rate"
                           colorScale={colorScaleUSRate}
                           range={dataSummary.rateRange}
+                          scaleTexts={["Low rate", "High rate"]}
                         />
                       </Grid.Col>
                       <Grid.Col span={6}>
@@ -505,6 +506,7 @@ function App() {
                                 plot="rate"
                                 colorScale={colorScaleStateRate}
                                 range={stateDataSummary.rateRange}
+                                scaleTexts={["Low rate", "High rate"]}
                               />
                             )}
                           </>
@@ -549,6 +551,7 @@ function App() {
                           plot="surprise"
                           colorScale={colorScaleSurprise}
                           range={dataSummary.surpriseRange}
+                          scaleTexts={["Surprisingly low", "Surprisingly high"]}
                         />
                       </Grid.Col>
                       {selectedState && (
@@ -571,6 +574,10 @@ function App() {
                               plot="surprise"
                               colorScale={colorScaleStateSurprise}
                               range={stateDataSummary.surpriseRange}
+                              scaleTexts={[
+                                "Surprisingly low",
+                                "Surprisingly high",
+                              ]}
                             />
                           )}
                         </Grid.Col>

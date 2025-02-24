@@ -13,7 +13,7 @@ import classes from "./Map.module.css";
 const width = 500;
 const height = 300;
 
-function StateMap({ plot, colorScale, range }) {
+function StateMap({ plot, colorScale, range, scaleTexts }) {
   const data = useAppStore((state) => state.stateData);
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
@@ -148,7 +148,7 @@ function StateMap({ plot, colorScale, range }) {
             </pattern>
           </defs>
         </svg>
-        <Legend colorScale={colorScale} range={range} />
+        <Legend colorScale={colorScale} range={range} scaleTexts={scaleTexts} />
         <ToolTip
           countyData={data[hoveredCountyId]}
           plot={plot}
@@ -164,6 +164,7 @@ StateMap.propTypes = {
   plot: PropTypes.string.isRequired,
   colorScale: PropTypes.func.isRequired,
   range: PropTypes.array.isRequired,
+  scaleTexts: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default memo(StateMap);

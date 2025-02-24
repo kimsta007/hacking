@@ -4,11 +4,11 @@ import * as d3 from "d3";
 import classes from "./Map.module.css";
 
 const svgWidth = 350;
-const svgHeight = 30;
+const svgHeight = 40;
 const legendWidth = 320;
 const legendHeight = 10;
 
-function Legend({ colorScale }) {
+function Legend({ colorScale, scaleTexts }) {
   const legendRef = useRef(null);
 
   useEffect(() => {
@@ -20,6 +20,7 @@ function Legend({ colorScale }) {
     const svg = d3
       .select(legendRef.current)
       .append("svg")
+      .attr("style", "display: block; margin-right: 5px;")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
 
@@ -61,13 +62,33 @@ function Legend({ colorScale }) {
       .attr("text-anchor", "middle")
       .style("font-size", "10px")
       .text((d) => Math.round(d * 100) / 100); 
-  }, [colorScale]);
+
+    const textGroup = svg
+      .append("g")
+      .attr("transform", `translate(0, 35)`);
+
+    textGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("text-anchor", "start")
+      .style("font-size", "10px")
+      .text(scaleTexts[0]);
+
+    textGroup.append("text")
+      .attr("x", svgWidth)
+      .attr("y", 0)
+      .attr("text-anchor", "end")
+      .style("font-size", "10px")
+      .text(scaleTexts[1]);
+
+    }, [colorScale, scaleTexts]);
 
   return <div ref={legendRef} className={classes.legend}></div>;
 }
 
 Legend.propTypes = {
   colorScale: PropTypes.func.isRequired,
+  scaleTexts: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default memo(Legend);

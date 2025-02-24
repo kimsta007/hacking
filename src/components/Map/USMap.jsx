@@ -15,7 +15,7 @@ import classes from "./Map.module.css";
 const width = 500;
 const height = 300;
 
-function USMap({ plot, colorScale, range }) {
+function USMap({ plot, colorScale, range, scaleTexts }) {
   const data = useAppStore((state) => state.data);
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
@@ -133,7 +133,7 @@ function USMap({ plot, colorScale, range }) {
   return (
     <div>
       <div className={classes.map} style={{ height, width }}>
-        <Legend colorScale={colorScale} range={range} />
+        <Legend colorScale={colorScale} range={range} scaleTexts={scaleTexts} />
         <svg ref={svgRef} width={width} height={height} className="mapSvg">
           <defs>
             <pattern
@@ -167,6 +167,7 @@ USMap.propTypes = {
   plot: PropTypes.string.isRequired,
   colorScale: PropTypes.func.isRequired,
   range: PropTypes.array.isRequired,
+  scaleTexts: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default memo(USMap);
