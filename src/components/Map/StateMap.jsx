@@ -18,6 +18,8 @@ function StateMap({ plot, colorScale, range, scaleTexts }) {
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
+  const setIsHovered = useAppStore((state) => state.setIsHovered);
+  const isHovered = useAppStore((state) => state.isHovered);
 
   const { svgRef, gRef, tooltipX, tooltipY, hoveredCountyId, zoom } = useSVGMap(
     width,
@@ -31,7 +33,6 @@ function StateMap({ plot, colorScale, range, scaleTexts }) {
       return;
     }
 
-    console.log("Render Map");
     const svg = d3
       .select(svgRef.current)
       // .attr("viewBox", [0, 0, width, height])
@@ -66,7 +67,7 @@ function StateMap({ plot, colorScale, range, scaleTexts }) {
 
       g.append("g")
         .append("path")
-        .attr("fill", "#FFF")
+        .attr("fill", "#000")
         .attr("pointer-events", "none")
         .attr("stroke", "#999")
         .attr("stroke-width", 0.35)
@@ -78,8 +79,8 @@ function StateMap({ plot, colorScale, range, scaleTexts }) {
         .data(topojson.feature(us, us.objects.states).features)
         .join("path")
         .attr("fill", "#FFF")
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 0.5)
+        .attr("stroke", "#000")
+        .attr("stroke-width", 0.2)
         .attr("d", path)
         .on("dblclick", (event, d) => {
           console.log(d);
@@ -104,10 +105,23 @@ function StateMap({ plot, colorScale, range, scaleTexts }) {
         .attr("stroke-width", 0.5)
         .on("mouseover", (event, d) => {
           setHoveredCountyId(d.id);
+          setIsHovered(true);
         })
         .on("mouseout", () => {
           setHoveredCountyId(null);
+          setIsHovered(false);
         });
+
+        const states = topojson.feature(us, us.objects.states).features;
+        const state = states.find((d) => +d.id === +selectedState.fips);
+        g.append("g")
+          .append("path")
+          .attr("fill", "none")
+          .attr("pointer-events", "none")
+          .attr("stroke", "#000")
+          .attr("stroke-width", 1)
+          .attr("stroke-linejoin", "round")
+          .attr("d", path(state));
     }
 
     load();
@@ -154,6 +168,7 @@ function StateMap({ plot, colorScale, range, scaleTexts }) {
           plot={plot}
           x={tooltipX}
           y={tooltipY}
+          isHovered={isHovered}
         />
       </div>
     </div>

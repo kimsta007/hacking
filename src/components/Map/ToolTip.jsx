@@ -19,7 +19,7 @@ TYPOLOGIES.forEach((typology) => {
 });
 
 
-function ToolTip({ countyData, plot, x, y }) {
+function ToolTip({ countyData, plot, x, y, isHovered }) {
   // get state from county's fips code
   const state = statesFipsMap[countyData?.fips.slice(0, 2)];
 
@@ -35,10 +35,10 @@ function ToolTip({ countyData, plot, x, y }) {
       style={{
         left: x,
         top: y,
-        display: countyData ? "block" : "none",
+        display: isHovered ? "block" : "none",
       }}
     >
-      {countyData && (
+      {countyData != null ? (
         <>
           <Text size="sm" fw={700}>
             {countyData.county}
@@ -57,7 +57,8 @@ function ToolTip({ countyData, plot, x, y }) {
             {typologiesMap[countyData["typology"]].description}
           </Text>
         </>
-      )}
+      ) : (isHovered && "No data available")
+      }
     </div>,
     document.getElementById("tooltipContainer")
   );
@@ -68,6 +69,7 @@ ToolTip.propTypes = {
   plot: PropTypes.string.isRequired,
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
+  isHovered: PropTypes.bool.isRequired,
 };
 
 export default memo(ToolTip);

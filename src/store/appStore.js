@@ -10,6 +10,9 @@ export const useAppStore = create(
     hoveredCountyId: null,
     setHoveredCountyId: (id) => set(() => ({ hoveredCountyId: id })),
 
+    isHovered: false,
+    setIsHovered: (state) => set(() => ({ isHovered: state })),
+
     brushedCountyIds: [],
     setBrushedCountyIds: (ids) => set(() => ({ brushedCountyIds: ids })),
 
@@ -106,7 +109,7 @@ export const useAppStore = create(
     ],
     setUIElements: (uiElements) => set(() => ({ uiElements })),
 
-    rateColorScaleRangeType: "IQR", // MinMax or IQR 
+    rateColorScaleRangeType: "MinMax", // MinMax or IQR 
     setRateColorScaleRangeType: (range) =>
       set(() => ({ rateColorScaleRangeType: range })),
   }))

@@ -20,6 +20,8 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
   const selectedState = useAppStore((state) => state.selectedState);
   const setSelectedState = useAppStore((state) => state.setSelectedState);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
+  const setIsHovered = useAppStore((state) => state.setIsHovered);
+  const isHovered = useAppStore((state) => state.isHovered);
 
   const { svgRef, gRef, tooltipX, tooltipY, hoveredCountyId, zoom } = useSVGMap(
     width,
@@ -87,9 +89,11 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
         })
         .on("mouseover", (event, d) => {
           setHoveredCountyId(d.id);
+          setIsHovered(true);
         })
         .on("mouseout", () => {
           setHoveredCountyId(null);
+          setIsHovered(false);
         });
       g.append("g")
         .append("path")
@@ -157,6 +161,7 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
           plot={plot}
           x={tooltipX}
           y={tooltipY}
+          isHovered={isHovered}
         />
       </div>
     </div>
