@@ -159,12 +159,10 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     const context = canvasHighlightRef.current.getContext("2d");
     context.clearRect(0, 0, width, height);
     context.fillStyle = "white";
-    context.font = "11px Arial";
-    context.fillText("Surprisingly high", width - 85, 15);
-
-    context.fillStyle = "white";
-    context.font = "11px Arial";
-    context.fillText("Surprisingly low", width - 85, height - 10);
+    context.font = `${11 * dpr}px Arial`;
+    context.textAlign = "right";
+    context.fillText("Surprisingly high", width - 10, 11 * dpr);
+    context.fillText("Surprisingly low", width - 10, height - 11 * dpr/2);
     context.save();
 
     const d = data[hoveredCountyId];
