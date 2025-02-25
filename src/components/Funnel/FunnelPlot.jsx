@@ -22,6 +22,8 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
   const canvasRef = useRef(null);
   const canvasHighlightRef = useRef(null);
   const svgRef = useRef(null);
+  const overlayTopRef = useRef(null);
+  const overlayBottomRef = useRef(null);
   const hoveredCountyId = useAppStore((state) => state.hoveredCountyId);
   const setHoveredCountyId = useAppStore((state) => state.setHoveredCountyId);
   const brushView = useAppStore((state) => state.brushView);
@@ -283,6 +285,29 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     [id, updateSurpriseRangeBy]
   );
 
+  useEffect(() => {
+    const topElem = overlayTopRef.current;
+    const bottomElem = overlayBottomRef.current;
+    if (!topElem || !bottomElem) return;
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const v = e.deltaY / 8;
+
+      updateSurpriseRangeBy(id, v, "high");
+      updateSurpriseRangeBy(id, -v, "low");
+    };
+
+    topElem.addEventListener("wheel", handleWheel, { passive: false });
+    bottomElem.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      topElem.removeEventListener("wheel", handleWheel);
+      bottomElem.removeEventListener("wheel", handleWheel);
+    };
+  }, [id, updateSurpriseRangeBy]);
+
   return (
     <div>
       <Box m={5}>
@@ -328,11 +353,13 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
           }}
         >
           <div
+            ref={overlayTopRef}
             className="funnelPlotScaleOverlay__top"
             data-pos="high"
             onMouseDown={handleMouseDown}
           ></div>
           <div
+            ref={overlayBottomRef}
             className="funnelPlotScaleOverlay__bottom"
             data-pos="low"
             onMouseDown={handleMouseDown}
