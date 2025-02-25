@@ -155,8 +155,16 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
 
   useEffect(() => {
     const context = canvasHighlightRef.current.getContext("2d");
-    context.save();
     context.clearRect(0, 0, width, height);
+    context.fillStyle = "white";
+    context.font = "11px Arial";
+    context.fillText("Surprisingly high", width - 85, 15);
+
+    context.fillStyle = "white";
+    context.font = "11px Arial";
+    context.fillText("Surprisingly low", width - 85, height - 10);
+    context.save();
+
     const d = data[hoveredCountyId];
 
     context.scale(dpr, dpr);
@@ -189,7 +197,6 @@ function FunnelPlot({ id, data, dataSummary, colorScale }) {
     context.arc(xScale(d.population), yScale(d.zScore), 4, 0, 2 * Math.PI);
     context.fillStyle = "blue";
     context.fill();
-
     context.restore();
   }, [hoveredCountyId, brushedCountyIds, data, xScale, yScale]);
 
