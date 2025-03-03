@@ -63,42 +63,42 @@ colorPaletteSurprise[5] = "#eee";
 
 const rateColorScales = [
   {
-    label: "reds",
+    label: "Reds",
     value: "reds",
     d: [...d3.schemeReds[9]],
   },
   {
-    label: "reds reverse",
+    label: "Reds Reverse",
     value: "reds-reverse",
     d: [...d3.schemeReds[9]].reverse(),
   },
   {
-    label: "blues",
+    label: "Blues",
     value: "blues",
     d: [...d3.schemeBlues[9]],
   },
   {
-    label: "blues reverse",
+    label: "Blues Reverse",
     value: "blues-reverse",
     d: [...d3.schemeBlues[9]].reverse(),
   },
   {
-    label: "rdbu",
+    label: "RdBu",
     value: "rdbu",
     d: [...d3.schemeRdBu[11]],
   },
   {
-    label: "rdbu reverse",
+    label: "RdBu Reverse",
     value: "rdbu-reverse",
     d: [...d3.schemeRdBu[11]].reverse(),
   },
   {
-    label: "puor",
+    label: "PuOr",
     value: "puor",
     d: [...d3.schemePuOr[11]],
   },
   {
-    label: "puor reverse",
+    label: "PuOr Reverse",
     value: "puor-reverse",
     d: [...d3.schemePuOr[11]].reverse(),
   },
@@ -106,22 +106,22 @@ const rateColorScales = [
 
 const surpriseColorScales = [
   {
-    label: "rdbu",
+    label: "RdBu",
     value: "rdbu",
     d: [...d3.schemeRdBu[11]],
   },
   {
-    label: "rdbu reverse",
+    label: "RdBu Reverse",
     value: "rdbu-reverse",
     d: [...d3.schemeRdBu[11]].reverse(),
   },
   {
-    label: "puor",
+    label: "PuOr",
     value: "puor",
     d: [...d3.schemePuOr[11]],
   },
   {
-    label: "puor reverse",
+    label: "PuOr Reverse",
     value: "puor-reverse",
     d: [...d3.schemePuOr[11]].reverse(),
   },
