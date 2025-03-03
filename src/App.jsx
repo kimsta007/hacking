@@ -198,9 +198,9 @@ function App() {
   const [colorScaleStateRateScheme, setColorScaleStateRateScheme] =
     useState("reds");
   const [colorScaleUSSurpriseScheme, setColorScaleUSSurpriseScheme] =
-    useState("rdbu");
+    useState("rdbu-reverse");
   const [colorScaleStateSurpriseScheme, setColorScaleStateSurpriseScheme] =
-    useState("rdbu");
+    useState("rdbu-reverse");
 
   const colorScaleUSRate = useMemo(() => {
     return dataSummary
