@@ -82,6 +82,26 @@ const rateColorScales = [
     value: "blues-reverse",
     d: [...d3.schemeBlues[9]].reverse(),
   },
+  {
+    label: "rdbu",
+    value: "rdbu",
+    d: [...d3.schemeRdBu[11]],
+  },
+  {
+    label: "rdbu reverse",
+    value: "rdbu-reverse",
+    d: [...d3.schemeRdBu[11]].reverse(),
+  },
+  {
+    label: "puor",
+    value: "puor",
+    d: [...d3.schemePuOr[11]],
+  },
+  {
+    label: "puor reverse",
+    value: "puor-reverse",
+    d: [...d3.schemePuOr[11]].reverse(),
+  },
 ];
 
 const surpriseColorScales = [
