@@ -5,9 +5,9 @@ name: Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "multivariate" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "multivariate" ]
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
 
     - uses: peaceiris/actions-gh-pages@v3
       name: Deploy
-      if: ${{ github.ref == 'refs/heads/main' }}
+      if: ${{ github.ref == 'refs/heads/multivariate' }}
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
