@@ -18,7 +18,6 @@ TYPOLOGIES.forEach((typology) => {
   typologiesMap[typology.name] = typology;
 });
 
-
 function ToolTip({ countyData, plot, x, y, isHovered }) {
   // get state from county's fips code
   const state = statesFipsMap[countyData?.fips.slice(0, 2)];
@@ -49,7 +48,12 @@ function ToolTip({ countyData, plot, x, y, isHovered }) {
           <Text size="xs" tt="capitalize">
             { 
               plot == "surprise" ? (plot + ": " + countyData[plot].toFixed(2)) : 
-                 plot + ": " + (countyData[plot].toFixed(2) * 100).toFixed(0) + "%"
+                 "Poverty " + plot + ": " + (countyData.rate.toFixed(2) * 100).toFixed(0) + "%"
+            }
+          </Text>
+          <Text size="xs" tt="capitalize">
+            { 
+                plot == "rate" ?  ("Obesity " + plot + ": " + (countyData.rateU.toFixed(2) * 100).toFixed(0) + "%") : ""
             }
           </Text>
           <Text size="xs">Population: {formattedPopulation}</Text>

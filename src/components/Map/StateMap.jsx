@@ -83,7 +83,6 @@ function StateMap({ plot, colorScale, range, scaleTexts }) {
         .attr("stroke-width", 0.2)
         .attr("d", path)
         .on("dblclick", (event, d) => {
-          console.log(d);
           const fips = Math.floor(d.id);
           const state = STATES.find((s) => +s.fips === fips);
           setSelectedState({

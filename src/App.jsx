@@ -20,6 +20,7 @@ import * as d3 from "d3";
 
 import { USMap, StateMap } from "./components/Map";
 import FunnelPlot from "./components/Funnel";
+import FunnelPlotU from "./components/FunnelU";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppStore } from "./store/appStore";
 import calcSurprise from "./utils/surprise";
@@ -148,7 +149,7 @@ const renderSelectOption = ({ option }) => (
 
 function App() {
   const [currentDataset, setCurrentDataset] = useState(
-    DATASETS["Unemployment"]
+    DATASETS["Pu"]
   );
 
   const [typologies, setTypologies] = useState(
@@ -300,11 +301,8 @@ function App() {
           acc[d.fips] = {
             fips: d.fips,
             rate: +d.rate,
+            rateU: +d.rate_u,
             population: +d.population,
-            latinopop: +d.latinopop,
-            whitepop: +d.whitepop,
-            asianpop: +d.asianpop,
-            blackpop: +d.blackpop,
             county: d.county,
             typology: d.typology,
           };
@@ -610,6 +608,12 @@ function App() {
                       <Grid.Col span={6}>
                         <div>US Surprise Funnel Plot</div>
                         <FunnelPlot
+                          id="globalFunnel"
+                          colorScale={colorScaleSurprise}
+                          data={data}
+                          dataSummary={dataSummary}
+                        />
+                        <FunnelPlotU
                           id="globalFunnel"
                           colorScale={colorScaleSurprise}
                           data={data}

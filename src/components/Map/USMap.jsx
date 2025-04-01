@@ -7,6 +7,7 @@ import * as d3 from "d3";
 import { useSVGMap } from "./useSVGMap";
 import ToolTip from "./ToolTip";
 import Legend from "./Legend";
+import Bivariate from "./Bivariate";
 import us from "../../data/us-10m.v1.json";
 import STATES from "../../data/states.json";
 
@@ -23,6 +24,19 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
   const setIsHovered = useAppStore((state) => state.setIsHovered);
   const isHovered = useAppStore((state) => state.isHovered);
 
+  const x = d3.scaleQuantile(Object.values(data).map(d => d.rate), d3.range(3));
+  const y = d3.scaleQuantile(Object.values(data).map(d => d.rateU), d3.range(3));
+
+  const colors = [
+    "#e8e8e8", "#e4acac", "#c85a5a",
+    "#b0d5df", "#ad9ea5", "#985356",
+    "#64acbe", "#627f8c", "#574249"
+  ];
+
+  const color = (value) => {
+    if (!value) return "#ccc";
+    return colors[y(value.rateU) + x(value.rate) * 3];
+  };
   const { svgRef, gRef, tooltipX, tooltipY, hoveredCountyId, zoom } = useSVGMap(
     width,
     height
@@ -33,8 +47,6 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
       return;
     }
 
-    // d3.select(svgRef.current).selectAll("*").remove();
-
     const svg = d3
       .select(svgRef.current)
       .attr("width", width)
@@ -43,7 +55,6 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
 
     svg.call(zoom);
     const path = d3.geoPath();
-
     let g = svg.select("g.nationalMapGroup");
     if (g.empty()) {
       g = svg.append("g").attr("class", "nationalMapGroup");
@@ -75,7 +86,8 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
           return selectedState ? (fips === +selectedState.fips ? 1 : 0.5) : 1;
         })
         .attr("fill", (d) =>
-          data[d.id] ? colorScale(data[d.id][plot]) : "url(#crosshatch)"
+          //data[d.id] ? colorScale(data[d.id][plot]) : "url(#crosshatch)"
+          data[d.id] ? ((plot === "rate") ? color(data[d.id]) : colorScale(data[d.id][plot])) : "url(#crosshatch)"
         )
         .attr("data-id", (d) => d.id)
         .attr("stroke", "#fff")
@@ -137,7 +149,8 @@ function USMap({ plot, colorScale, range, scaleTexts }) {
   return (
     <div>
       <div className={classes.map} style={{ height, width }}>
-        <Legend colorScale={colorScale} range={range} scaleTexts={scaleTexts} />
+        {plot === "surprise" ? <Legend colorScale={colorScale} range={range} scaleTexts={scaleTexts} /> :
+        <Bivariate />}
         <svg ref={svgRef} width={width} height={height} className="mapSvg">
           <defs>
             <pattern

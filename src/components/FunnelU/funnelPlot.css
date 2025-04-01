@@ -1,0 +1,56 @@
+.funnelPlotContainer {
+  position: relative;
+  width: 500px;
+  height: 200px;
+  background-color: #fff;
+}
+
+.funnelPlotCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.funnelPlotSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.funnelPlotScaleOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: NS-resize;
+  user-select: none;
+}
+
+.funnelPlotScaleOverlay__top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  cursor: NS-resize;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.funnelPlotScaleOverlay__bottom {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  cursor: NS-resize;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}

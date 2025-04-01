@@ -88,7 +88,6 @@ function PCP({ id, data, colorScale }) {
     const background = canvasBackgroundRef.current.getContext("2d");
 
     d3.select(svgRef.current).selectAll("*").remove();
-    console.log("RESET");
 
     const svg = d3
       .select(svgRef.current)
