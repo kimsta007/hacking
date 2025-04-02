@@ -48,12 +48,12 @@ function ToolTip({ countyData, plot, x, y, isHovered }) {
           <Text size="xs" tt="capitalize">
             { 
               plot == "surprise" ? (plot + ": " + countyData[plot].toFixed(2)) : 
-                 "Poverty " + plot + ": " + (countyData.rate.toFixed(2) * 100).toFixed(0) + "%"
+                 "Medicaid " + plot + ": " + (countyData.rate.toFixed(2) * 100).toFixed(0) + "%"
             }
           </Text>
           <Text size="xs" tt="capitalize">
             { 
-                plot == "rate" ?  ("Obesity " + plot + ": " + (countyData.rateU.toFixed(2) * 100).toFixed(0) + "%") : ""
+                plot == "rate" ?  ("Voter " + plot + ": " + (countyData.rateU.toFixed(2) * 100).toFixed(0) + "%") : ""
             }
           </Text>
           <Text size="xs">Population: {formattedPopulation}</Text>

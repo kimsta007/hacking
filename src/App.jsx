@@ -149,7 +149,7 @@ const renderSelectOption = ({ option }) => (
 
 function App() {
   const [currentDataset, setCurrentDataset] = useState(
-    DATASETS["Pu"]
+    DATASETS["Medicaid & Voter Rates"]
   );
 
   const [typologies, setTypologies] = useState(
@@ -606,14 +606,14 @@ function App() {
                   return (
                     <Grid key={elem.id} gutter={0} mb="md">
                       <Grid.Col span={6}>
-                        <div>US Surprise Funnel Plot (Poverty)</div>
+                        <div>US Surprise Funnel Plot (Medicaid)</div>
                         <FunnelPlot
                           id="globalFunnel"
                           colorScale={colorScaleSurprise}
                           data={data}
                           dataSummary={dataSummary}
                         />
-                        <div>US Surprise Funnel Plot (Obesity)</div>
+                        <div>US Surprise Funnel Plot (Voter)</div>
                         <FunnelPlotU
                           id="globalFunnel"
                           colorScale={colorScaleSurprise}

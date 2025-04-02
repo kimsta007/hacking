@@ -33,17 +33,17 @@ const Bivariate = () => {
     });
 
     svg.append("text")
-      .attr("transform", `rotate(90) translate(${-n * k / 2 + 25}, 35)`) 
+      .attr("transform", `rotate(90) translate(${-n * k / 2 + 22}, 35)`) 
       .attr("text-anchor", "middle")
       .style("font-size", "9px")
-      .text("Poverty");
+      .text("Medicaid");
 
     svg.append("text")
       .attr("x", 0)
       .attr("y", n * k / 2 + 10)
       .attr("text-anchor", "middle")
       .style("font-size", "9px")
-      .text("Obesity");
+      .text("Voter");
 
   }, []);
 
