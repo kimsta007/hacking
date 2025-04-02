@@ -19,7 +19,6 @@ const H = originalHeight - margin.top - margin.bottom;
 const contourSteps = 1;
 
 function FunnelPlotU({ id, data, dataSummary, colorScale }) {
-
   const canvasRef = useRef(null);
   const canvasHighlightRef = useRef(null);
   const svgRef = useRef(null);
@@ -139,6 +138,9 @@ function FunnelPlotU({ id, data, dataSummary, colorScale }) {
 
     context.fillStyle = "black";
     context.strokeStyle = "white";
+    for (const fipsCode in data){
+      data[fipsCode].zUScore = -data[fipsCode].zUScore;
+    }
     // render data points
     Object.values(data).forEach((d) => {
       context.beginPath();
