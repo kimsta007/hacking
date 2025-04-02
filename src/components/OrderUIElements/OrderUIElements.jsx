@@ -21,7 +21,7 @@ function OrderUIElements() {
   const [visibility, setVisibility] = useState({
     choroplethMap: true,
     surpriseMap: true,
-    funnelPlot: false,
+    funnelPlot: true,
     pcp: false,
   });
 
