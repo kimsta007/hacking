@@ -27,6 +27,6 @@
   "Pu": {
     "id": "Pu",
     "path": "data/v2/pu.csv",
-    "description": "Unemployment and Poverty"
+    "description": "Unemployment and Poverty - Bi variate map"
   }
 }

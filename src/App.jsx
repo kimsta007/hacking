@@ -484,8 +484,8 @@ function App() {
                     <Grid gutter={0} key={elem.id} mb="md">
                       <Grid.Col span={6}>
                         <Group justify="space-between" mr="md">
-                          <div>US Choropleth Map</div>
-                          <Select
+                          <div>US Choropleth Map (Bi-variate)</div>
+                          {/* <Select
                             size="sm"
                             data={rateColorScales}
                             value={colorScaleUSRateScheme}
@@ -494,7 +494,7 @@ function App() {
                             allowDeselect={false}
                             renderOption={renderSelectOption}
                             w={250}
-                          />
+                          /> */}
                         </Group>
                         <USMap
                           plot="rate"
@@ -553,7 +553,7 @@ function App() {
                     <Grid gutter={0} key={elem.id} mb="md">
                       <Grid.Col span={6}>
                         <Group justify="space-between" mr="md">
-                          <div>US Surprise Map</div>
+                          <div>Joint US Surprise Map</div>
                           <Select
                             data={surpriseColorScales}
                             value={colorScaleUSSurpriseScheme}
@@ -606,13 +606,14 @@ function App() {
                   return (
                     <Grid key={elem.id} gutter={0} mb="md">
                       <Grid.Col span={6}>
-                        <div>US Surprise Funnel Plot</div>
+                        <div>US Surprise Funnel Plot (Poverty)</div>
                         <FunnelPlot
                           id="globalFunnel"
                           colorScale={colorScaleSurprise}
                           data={data}
                           dataSummary={dataSummary}
                         />
+                        <div>US Surprise Funnel Plot (Obesity)</div>
                         <FunnelPlotU
                           id="globalFunnel"
                           colorScale={colorScaleSurprise}
